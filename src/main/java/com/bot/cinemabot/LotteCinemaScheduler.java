@@ -38,9 +38,12 @@ public class LotteCinemaScheduler {
         if (count == -1) {
             log.debug(gson.toJson(data));
         } else if (count != lastCount.get()) {
+            if (lastCount.get() == 0) {
+                sendMessage("시네마봇 재시작 되었습니다.");
+            }
             lastCount.set(count);
             CinemaItem movieItem = getMovieItem(cinemaMallItems);
-            sendMessage(String.format("%s\n%s", movieItem.getDisplayItemName(), movieItem.getItemImageUrl()));
+            sendMessage(String.format("%s\n%s원\n%s", movieItem.getDisplayItemName(), movieItem.getDiscountSellPrice(), movieItem.getItemImageUrl()));
         }
 
         log.info("호출횟수:{},\t현재 영화관람권 개수:{}", callCount.incrementAndGet(), lastCount);
