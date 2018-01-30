@@ -11,7 +11,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.bot.cinemabot.model.CinemaItem;
+import com.bot.cinemabot.model.CinemaMallItem;
 import com.bot.cinemabot.model.CinemaResponse;
+import com.bot.cinemabot.model.DisplayItem;
 import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,24 +29,42 @@ public class LotteCinemaScheduler {
     final private AtomicInteger lastCount = new AtomicInteger(0);
     final private AtomicInteger callCount = new AtomicInteger(0);
 
-    @Scheduled(initialDelay = 1_000, fixedDelay = 60_000 * 10)
+    @Scheduled(initialDelay = 1_000, fixedDelay = 60_000 * 5)
     public void aJob() {
-        AtomicInteger count = new AtomicInteger(0);
         CinemaResponse data = getCinemaData();
+        CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();
+        int count = getMoviesCount(cinemaMallItems);
 
-        data.getCinemaMallItemLists().getCinemaMallClassifications().getItems()
+        if (count == -1) {
+            log.debug(gson.toJson(data));
+        } else if (count != lastCount.get()) {
+            lastCount.set(count);
+            CinemaItem movieItem = getMovieItem(cinemaMallItems);
+            sendMessage(String.format("%s\n%s", movieItem.getDisplayItemName(), movieItem.getItemImageUrl()));
+        }
+
+        log.info("호출횟수:{},\t현재 영화관람권 개수:{}", callCount.incrementAndGet(), lastCount);
+    }
+
+    private int getMoviesCount(CinemaMallItem cinemaMallItems) {
+        return cinemaMallItems.getCinemaMallClassifications().getItems()
                 .stream()
                 .filter(item -> "20".equals(item.getDisplayLargeClassificationCode()))
                 .filter(item -> "10".equals(item.getDisplayMiddleClassificationCode()))
                 .findFirst()
-                .ifPresent(item -> count.set(item.getItemCount()));
+                .map(DisplayItem::getItemCount)
+                .orElse(-1);
+    }
 
-        if (count.get() != lastCount.get()) {
-            lastCount.set(count.get());
-            sendMessage("얼리버드 1+1");
-            log.info("신규영화 생겼다.");
-        }
-        log.info("호출횟수:{}, 현재영화갯수:{}", callCount.incrementAndGet(), lastCount);
+    private CinemaItem getMovieItem(CinemaMallItem cinemaMallItems) {
+        return cinemaMallItems.getItems().getItems()
+                .stream()
+                .filter(item -> "20".equals(item.getDisplayLargeClassificationCode()))
+                .filter(item -> "10".equals(item.getDisplayMiddleClassificationCode()))
+                .filter(item -> "영화관람권".equals(item.getDisplayMiddleClassificationName()))
+                .filter(item -> item.getDisplayItemName().contains("1+1"))
+                .findFirst()
+                .orElse(new CinemaItem());
     }
 
     private CinemaResponse getCinemaData() {
@@ -61,10 +82,14 @@ public class LotteCinemaScheduler {
     }
 
     private void sendMessage(String message) {
+        log.info(message);
         String telegramURL =
                 String.format("https://api.telegram.org/bot477314226:AAHNHCnV9nfMIwMEGaUzam_CvQBNJ9PrFZ8/sendMessage?chat_id=451573335&text=%s",
                         message);
-        restTemplate.getForObject(telegramURL, String.class);
+        String response = restTemplate.getForObject(telegramURL, String.class);
+        if (!response.contains("\"ok\":true")) {
+            log.error("텔레그램 메시지 전송 실패. {}", response);
+        }
     }
 
 }
