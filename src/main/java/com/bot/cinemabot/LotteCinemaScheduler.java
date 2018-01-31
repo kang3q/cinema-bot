@@ -2,6 +2,10 @@ package com.bot.cinemabot;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,7 +33,25 @@ public class LotteCinemaScheduler {
     final private AtomicInteger lastCount = new AtomicInteger(0);
     final private AtomicInteger callCount = new AtomicInteger(0);
 
-    @Scheduled(initialDelay = 1_000, fixedDelay = 60_000 * 5)
+    @Value("${telegram.token}")
+    private String token;
+    @Value("${telegram.chatId}")
+    private String chatId;
+    @Value("${telegram.sendMessageUrl}")
+    private String sendMessageUrl;
+
+    @PostConstruct
+    public void hi() {
+        sendMessageUrl = String.format(sendMessageUrl, token, chatId);
+        sendMessage("시네마봇 재시작 되었습니다.");
+    }
+
+    @PreDestroy
+    public void bye() {
+        sendMessage("시네마봇 종료 되었습니다.");
+    }
+
+    @Scheduled(initialDelay = 1_000, fixedDelayString = "${schedule.fixedDelay}")
     public void aJob() {
         CinemaResponse data = getCinemaData();
         CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();
@@ -38,15 +60,12 @@ public class LotteCinemaScheduler {
         if (count == -1) {
             log.debug(gson.toJson(data));
         } else if (count != lastCount.get()) {
-            if (lastCount.get() == 0) {
-                sendMessage("시네마봇 재시작 되었습니다.");
-            }
             lastCount.set(count);
             CinemaItem movieItem = getMovieItem(cinemaMallItems);
             sendMessage(String.format("%s\n%s원\n%s", movieItem.getDisplayItemName(), movieItem.getDiscountSellPrice(), movieItem.getItemImageUrl()));
         }
 
-        log.info("호출횟수:{},\t현재 영화관람권 개수:{}", callCount.incrementAndGet(), lastCount);
+        log.info("호출횟수:{}, 영화관람권:{}", callCount.incrementAndGet(), lastCount);
     }
 
     private int getMoviesCount(CinemaMallItem cinemaMallItems) {
@@ -86,10 +105,8 @@ public class LotteCinemaScheduler {
 
     private void sendMessage(String message) {
         log.info(message);
-        String telegramURL =
-                String.format("https://api.telegram.org/bot477314226:AAHNHCnV9nfMIwMEGaUzam_CvQBNJ9PrFZ8/sendMessage?chat_id=451573335&text=%s",
-                        message);
-        String response = restTemplate.getForObject(telegramURL, String.class);
+        String telegramSendMessageUrl = sendMessageUrl + message;
+        String response = restTemplate.getForObject(telegramSendMessageUrl, String.class);
         if (!response.contains("\"ok\":true")) {
             log.error("텔레그램 메시지 전송 실패. {}", response);
         }
