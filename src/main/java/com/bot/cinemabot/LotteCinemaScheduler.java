@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.bot.cinemabot.model.CinemaItem;
@@ -34,6 +35,8 @@ public class LotteCinemaScheduler {
     private String token;
     @Value("${telegram.chatId}")
     private String chatId;
+    @Value("${telegram.apiDomain}")
+    private String api;
     @Value("${telegram.sendMessageUrl}")
     private String sendMessageUrl;
 
@@ -48,7 +51,7 @@ public class LotteCinemaScheduler {
 
     @PostConstruct
     public void hi() {
-        sendMessageUrl = String.format(sendMessageUrl, token, chatId);
+        sendMessageUrl = String.format(sendMessageUrl, token);
 
         CinemaResponse data = getCinemaData();
         CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();
@@ -56,8 +59,8 @@ public class LotteCinemaScheduler {
         List<CinemaItem> onePlusOneTickets = get1p1Tickets(cinemaMallItems);
         cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
 
-        sendMessage("시네마봇 재시작 되었습니다.\n모든 관람권: %s\n1+1 관람권: %s",
-                allTicketsCount, onePlusOneTickets.size());
+        //        sendMessage("시네마봇 재시작 되었습니다.\n모든 관람권: %s\n1+1 관람권: %s",
+        //                allTicketsCount, onePlusOneTickets.size());
     }
 
     @PreDestroy
@@ -79,12 +82,18 @@ public class LotteCinemaScheduler {
         if (allTicketsCount == -1) {
             log.debug(gson.toJson(data));
         } else if (isChangedTicket) {
+            CinemaItem movieItem = getNew1p1Ticket(cinemaMallItems);
+            if (!StringUtils.isEmpty(movieItem.getDisplayItemName())) {
+                String buyLink = String.format(
+                        "http://www.lottecinema.co.kr/LCHS/Contents/Cinema-Mall/gift-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s",
+                        movieItem.getDisplayItemID(), movieItem.getDisplayMiddleClassificationCode()
+                );
+                sendMessage("%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n\n이미지:%s",
+                        movieItem.getDisplayItemName(), movieItem.getDiscountSellPrice(),
+                        onePlusOneTickets.size(), cacheAllTicketsCount, buyLink, movieItem.getItemImageUrl()
+                );
+            }
             updateCache(onePlusOneTickets);
-            CinemaItem movieItem = first1p1Ticket(cinemaMallItems);
-            sendMessage("%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n%s",
-                    movieItem.getDisplayItemName(), movieItem.getDiscountSellPrice(),
-                    onePlusOneTickets.size(), cacheAllTicketsCount, movieItem.getItemImageUrl()
-            );
         }
 
         log.info("호출횟수:{}, 영화관람권:{}({}), 1+1관람권:{}({}), isChangedTicket:{}",
@@ -93,11 +102,17 @@ public class LotteCinemaScheduler {
     }
 
     private boolean isChangedTicket(List<CinemaItem> newTickets) {
-        return !newTickets
+        boolean a = !newTickets
                 .stream()
                 .allMatch(newTicket ->
                         cache1p1Tickets.stream().anyMatch(oldTicket -> oldTicket.getDisplayItemName().equals(newTicket.getDisplayItemName()))
                 );
+        boolean b = !cache1p1Tickets
+                .stream()
+                .allMatch(oldTicket ->
+                        newTickets.stream().anyMatch(newTicket -> newTicket.getDisplayItemName().equals(oldTicket.getDisplayItemName()))
+                );
+        return a || b;
     }
 
     private int allTicketsCount(CinemaMallItem cinemaMallItems) {
@@ -120,10 +135,11 @@ public class LotteCinemaScheduler {
                 .collect(Collectors.toList());
     }
 
-    private CinemaItem first1p1Ticket(CinemaMallItem cinemaMallItems) {
+    private CinemaItem getNew1p1Ticket(CinemaMallItem cinemaMallItems) {
         return get1p1Tickets(cinemaMallItems)
                 .stream()
-                .filter(item -> cache1p1Tickets.stream().noneMatch(t -> t.getDisplayItemName().equals(item.getDisplayItemName())))
+                .filter(newTicket -> cache1p1Tickets.stream()
+                        .noneMatch(oldTicket -> oldTicket.getDisplayItemName().equals(newTicket.getDisplayItemName())))
                 .findFirst()
                 .orElse(new CinemaItem());
     }
@@ -146,8 +162,12 @@ public class LotteCinemaScheduler {
         message = String.format(message, obj);
         log.info(message);
         if (!TEST) {
-            String telegramSendMessageUrl = sendMessageUrl + message;
-            String response = restTemplate.getForObject(telegramSendMessageUrl, String.class);
+            //            String telegramSendMessageUrl = sendMessageUrl + message;
+            //            String response = restTemplate.getForObject(telegramSendMessageUrl, String.class);
+            LinkedMultiValueMap data = new LinkedMultiValueMap();
+            data.add("chat_id", "@" + chatId);
+            data.add("text", message);
+            String response = restTemplate.postForObject(sendMessageUrl, data, String.class);
             if (!response.contains("\"ok\":true")) {
                 log.error("텔레그램 메시지 전송 실패. {}", response);
             }

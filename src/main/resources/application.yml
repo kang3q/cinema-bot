@@ -2,6 +2,6 @@ schedule:
   fixedDelay: 60000
 telegram:
   apiDomain: https://api.telegram.org
-  token: 477314226:AAHNHCnV9nfMIwMEGaUzam_CvQBNJ9PrFZ8
-  chatId: 451573335
-  sendMessageUrl: https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=
+  token:
+  chatId: cinema1p1
+  sendMessageUrl: https://api.telegram.org/bot%s/sendMessage
