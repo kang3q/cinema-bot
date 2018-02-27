@@ -1,3 +1,5 @@
+server:
+  port: 58080
 schedule:
   fixedDelay: 60000
 telegram:
