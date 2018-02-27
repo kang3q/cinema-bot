@@ -50,7 +50,7 @@ public class LotteCinemaScheduler {
         List<CinemaItem> onePlusOneTickets = get1p1Tickets(cinemaMallItems);
         cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
 
-        telegram.sendMessageToBot("시네마봇 재시작 되었습니다.\n모든 관람권: %s\n1+1 관람권: %s",
+        telegram.sendMessageToBot("롯데시네마\n모든 관람권: %s\n1+1 관람권: %s",
                 allTicketsCount, onePlusOneTickets.size());
     }
 

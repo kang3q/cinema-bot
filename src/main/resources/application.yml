@@ -1,4 +1,4 @@
-test: true
+test: false
 server:
   port: 58080
 schedule:
