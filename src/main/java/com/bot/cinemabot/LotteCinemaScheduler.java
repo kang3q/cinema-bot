@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 import com.bot.cinemabot.model.CinemaItem;
 import com.bot.cinemabot.model.CinemaMallItem;
@@ -31,41 +30,28 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class LotteCinemaScheduler {
 
-    @Value("${telegram.token}")
-    private String token;
-    @Value("${telegram.chatId}")
-    private String chatId;
-    @Value("${telegram.apiDomain}")
-    private String api;
-    @Value("${telegram.sendMessageUrl}")
-    private String sendMessageUrl;
-
-    final private RestTemplate restTemplate = new RestTemplate();
     final private Gson gson = new Gson();
 
     final private AtomicInteger callCount = new AtomicInteger(0);
     final private AtomicInteger cacheAllTicketsCount = new AtomicInteger(0);
     private List<CinemaItem> cache1p1Tickets;
 
-    final private boolean TEST = false;
+    @Autowired
+    private Telegram telegram;
+
+    @Value("${cinema.lotte.api}")
+    private String lotte;
 
     @PostConstruct
-    public void hi() {
-        sendMessageUrl = String.format(sendMessageUrl, token);
-
+    public void init() {
         CinemaResponse data = getCinemaData();
         CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();
         int allTicketsCount = allTicketsCount(cinemaMallItems);
         List<CinemaItem> onePlusOneTickets = get1p1Tickets(cinemaMallItems);
         cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
 
-        //        sendMessage("시네마봇 재시작 되었습니다.\n모든 관람권: %s\n1+1 관람권: %s",
-        //                allTicketsCount, onePlusOneTickets.size());
-    }
-
-    @PreDestroy
-    public void bye() {
-        sendMessage("시네마봇 종료 되었습니다.");
+        telegram.sendMessageToBot("시네마봇 재시작 되었습니다.\n모든 관람권: %s\n1+1 관람권: %s",
+                allTicketsCount, onePlusOneTickets.size());
     }
 
     @Scheduled(initialDelay = 1_000, fixedDelayString = "${schedule.fixedDelay}")
@@ -88,8 +74,8 @@ public class LotteCinemaScheduler {
                         "http://www.lottecinema.co.kr/LCHS/Contents/Cinema-Mall/gift-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s",
                         movieItem.getDisplayItemID(), movieItem.getDisplayMiddleClassificationCode()
                 );
-                sendMessage("%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n\n이미지:%s",
-                        movieItem.getDisplayItemName(), movieItem.getDiscountSellPrice(),
+                telegram.sendMessageToChannel("%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n\n이미지:%s",
+                        movieItem.getDisplayItemName(), movieItem.getUseRestrictionsDayName(), movieItem.getDiscountSellPrice(),
                         onePlusOneTickets.size(), cacheAllTicketsCount, buyLink, movieItem.getItemImageUrl()
                 );
             }
@@ -154,24 +140,8 @@ public class LotteCinemaScheduler {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-        String jsonResponse = restTemplate.postForObject("http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx", request, String.class);
+        String jsonResponse = telegram.restTemplate.postForObject(lotte, request, String.class);
         return gson.fromJson(jsonResponse, CinemaResponse.class);
-    }
-
-    private void sendMessage(String message, Object... obj) {
-        message = String.format(message, obj);
-        log.info(message);
-        if (!TEST) {
-            //            String telegramSendMessageUrl = sendMessageUrl + message;
-            //            String response = restTemplate.getForObject(telegramSendMessageUrl, String.class);
-            LinkedMultiValueMap data = new LinkedMultiValueMap();
-            data.add("chat_id", "@" + chatId);
-            data.add("text", message);
-            String response = restTemplate.postForObject(sendMessageUrl, data, String.class);
-            if (!response.contains("\"ok\":true")) {
-                log.error("텔레그램 메시지 전송 실패. {}", response);
-            }
-        }
     }
 
     private void updateCache(int allTicketsCount) {
@@ -186,3 +156,9 @@ public class LotteCinemaScheduler {
     }
 
 }
+
+//        https://memorynotfound.com/spring-boot-passing-command-line-arguments-example/
+//        java -jar command-line.jar \
+//            this-is-a-non-option-arg \
+//            --server.port=9090 \
+//            --person.name=Memorynotfound.com

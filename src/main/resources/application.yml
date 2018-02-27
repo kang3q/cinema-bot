@@ -1,3 +1,4 @@
+test: true
 server:
   port: 58080
 schedule:
@@ -5,5 +6,12 @@ schedule:
 telegram:
   apiDomain: https://api.telegram.org
   token:
-  chatId: cinema1p1
-  sendMessageUrl: https://api.telegram.org/bot%s/sendMessage
+  chatId: 451573335
+  channel: cinema1p1
+  api:
+    sendMessage: https://api.telegram.org/bot%s/sendMessage
+cinema:
+  lotte:
+    api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
+  cgv:
+    api: http://www.cgv.co.kr/culture-event/event/#2
