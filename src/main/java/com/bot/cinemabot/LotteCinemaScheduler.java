@@ -39,7 +39,7 @@ public class LotteCinemaScheduler {
     @Autowired
     private Telegram telegram;
 
-    @Value("${cinema.lotte.api}")
+    @Value("${bot.cinema.lotte.api}")
     private String lotte;
 
     @PostConstruct
@@ -54,7 +54,7 @@ public class LotteCinemaScheduler {
                 allTicketsCount, onePlusOneTickets.size());
     }
 
-    @Scheduled(initialDelay = 1_000, fixedDelayString = "${schedule.fixedDelay}")
+    @Scheduled(initialDelay = 1_000, fixedDelayString = "${bot.schedule.fixedDelay}")
     public void aJob() {
         CinemaResponse data = getCinemaData();
         CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();

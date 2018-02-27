@@ -16,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class Telegram {
 
-    @Value("${telegram.token}")
+    @Value("${bot.telegram.token}")
     private String token;
-    @Value("${telegram.chatId}")
+    @Value("${bot.telegram.chatId}")
     private String chatId;
-    @Value("${telegram.channel}")
+    @Value("${bot.telegram.channel}")
     private String channel;
-    @Value("${telegram.api.sendMessage}")
+    @Value("${bot.telegram.api.sendMessage}")
     private String sendMessageUrl;
     @Value("${test}")
     private String TEST;

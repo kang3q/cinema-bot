@@ -1,17 +1,22 @@
 test: false
+
+# spring
 server:
   port: 58080
-schedule:
-  fixedDelay: 60000
-telegram:
-  apiDomain: https://api.telegram.org
-  token:
-  chatId: 451573335
-  channel: cinema1p1
-  api:
-    sendMessage: https://api.telegram.org/bot%s/sendMessage
-cinema:
-  lotte:
-    api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
-  cgv:
-    api: http://www.cgv.co.kr/culture-event/event/#2
+
+# cinema-bot
+bot:
+  schedule:
+    fixedDelay: 60000
+  telegram:
+    apiDomain: https://api.telegram.org
+    token:
+    chatId: 451573335
+    channel: cinema1p1
+    api:
+      sendMessage: https://api.telegram.org/bot%s/sendMessage
+  cinema:
+    lotte:
+      api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
+    cgv:
+      api: http://www.cgv.co.kr/culture-event/event/#2
