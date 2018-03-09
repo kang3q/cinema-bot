@@ -19,4 +19,4 @@ bot:
     lotte:
       api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
     cgv:
-      api: http://www.cgv.co.kr/culture-event/event/#2
+      api: http://www.cgv.co.kr/culture-event/event
