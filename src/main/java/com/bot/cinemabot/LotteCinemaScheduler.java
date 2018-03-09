@@ -18,11 +18,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
-import com.bot.cinemabot.model.CinemaItem;
-import com.bot.cinemabot.model.CinemaMallItem;
-import com.bot.cinemabot.model.CinemaResponse;
-import com.bot.cinemabot.model.DisplayItem;
-import com.google.gson.Gson;
+import com.bot.cinemabot.model.lotte.CinemaItem;
+import com.bot.cinemabot.model.lotte.CinemaMallItem;
+import com.bot.cinemabot.model.lotte.CinemaResponse;
+import com.bot.cinemabot.model.lotte.DisplayItem;
+import com.bot.cinemabot.utils.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,17 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class LotteCinemaScheduler {
 
-    final private Gson gson = new Gson();
-
-    final private AtomicInteger callCount = new AtomicInteger(0);
-    final private AtomicInteger cacheAllTicketsCount = new AtomicInteger(0);
-    private List<CinemaItem> cache1p1Tickets;
-
     @Autowired
     private Telegram telegram;
 
     @Value("${bot.cinema.lotte.api}")
     private String lotte;
+
+    final private AtomicInteger callCount = new AtomicInteger(0);
+    final private AtomicInteger cacheAllTicketsCount = new AtomicInteger(0);
+    private List<CinemaItem> cache1p1Tickets;
 
     @PostConstruct
     public void init() {
@@ -66,7 +64,7 @@ public class LotteCinemaScheduler {
         boolean isChangedTicket = isChangedTicket(onePlusOneTickets);
 
         if (allTicketsCount == -1) {
-            log.debug(gson.toJson(data));
+            log.debug(Utils.gson.toJson(data));
         } else if (isChangedTicket) {
             CinemaItem movieItem = getNew1p1Ticket(cinemaMallItems);
             if (!StringUtils.isEmpty(movieItem.getDisplayItemName())) {
@@ -74,7 +72,7 @@ public class LotteCinemaScheduler {
                         "http://www.lottecinema.co.kr/LCHS/Contents/Cinema-Mall/gift-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s",
                         movieItem.getDisplayItemID(), movieItem.getDisplayMiddleClassificationCode()
                 );
-                telegram.sendMessageToChannel("%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n\n이미지:%s",
+                telegram.sendMessageToChannel("롯데시네마\n%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n\n이미지:%s",
                         movieItem.getDisplayItemName(), movieItem.getUseRestrictionsDayName(), movieItem.getDiscountSellPrice(),
                         onePlusOneTickets.size(), cacheAllTicketsCount, buyLink, movieItem.getItemImageUrl()
                 );
@@ -82,9 +80,8 @@ public class LotteCinemaScheduler {
             updateCache(onePlusOneTickets);
         }
 
-        log.info("호출횟수:{}, 영화관람권:{}({}), 1+1관람권:{}({}), isChangedTicket:{}",
-                callCount.incrementAndGet(), allTicketsCount, cacheAllTicketsCount, onePlusOneTickets.size(), cache1p1Tickets.size(),
-                isChangedTicket);
+        log.info("롯데시네마\t- 호출횟수:{}, 영화관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
+                callCount.incrementAndGet(), cacheAllTicketsCount, cache1p1Tickets.size(), isChangedTicket);
     }
 
     private boolean isChangedTicket(List<CinemaItem> newTickets) {
@@ -140,8 +137,8 @@ public class LotteCinemaScheduler {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-        String jsonResponse = telegram.restTemplate.postForObject(lotte, request, String.class);
-        return gson.fromJson(jsonResponse, CinemaResponse.class);
+        String jsonResponse = Utils.restTemplate.postForObject(lotte, request, String.class);
+        return Utils.gson.fromJson(jsonResponse, CinemaResponse.class);
     }
 
     private void updateCache(int allTicketsCount) {
@@ -156,9 +153,3 @@ public class LotteCinemaScheduler {
     }
 
 }
-
-//        https://memorynotfound.com/spring-boot-passing-command-line-arguments-example/
-//        java -jar command-line.jar \
-//            this-is-a-non-option-arg \
-//            --server.port=9090 \
-//            --person.name=Memorynotfound.com

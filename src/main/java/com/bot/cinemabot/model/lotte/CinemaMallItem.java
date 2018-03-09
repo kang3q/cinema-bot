@@ -1,4 +1,4 @@
-package com.bot.cinemabot.model;
+package com.bot.cinemabot.model.lotte;
 
 import lombok.Data;
 
