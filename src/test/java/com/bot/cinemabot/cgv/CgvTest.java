@@ -23,10 +23,10 @@ public class CgvTest {
         String html = cgv.html();
 //        System.out.println(html);
 
-        Pattern pattern = Pattern.compile("var jsonData ?= ?(\\[.+\\]);?");
+        Pattern pattern = Pattern.compile("var ( +)?jsonData( +)?=( +)?(\\[(.+)?\\])( +)?;?");
         Matcher matcher = pattern.matcher(html);
         if (matcher.find()) {
-            String json = matcher.group(1);
+            String json = matcher.group(4);
             System.out.println(json);
             List<CgvItem> items = new Gson().fromJson(json, new TypeToken<List<CgvItem>>(){}.getType());
             System.out.println(items);

@@ -79,12 +79,13 @@ public class CgvScheduler {
     private List<CgvItem> getCgvTicketsData() throws IOException {
         Document cgvDocument = Jsoup.connect(cgv).get();
         String html = cgvDocument.html();
-        Pattern pattern = Pattern.compile("var jsonData ?= ?(\\[.+\\]);?");
+        Pattern pattern = Pattern.compile("var ( +)?jsonData( +)?=( +)?(\\[(.+)?\\])( +)?;?");
         Matcher matcher = pattern.matcher(html);
         if (matcher.find()) {
-            String json = matcher.group(1);
+            String json = matcher.group(4);
             return new Gson().fromJson(json, new TypeToken<List<CgvItem>>() {}.getType());
         }
+        log.debug(html);
         throw new IllegalArgumentException("cgv 데이터 조회 실패!");
     }
 
