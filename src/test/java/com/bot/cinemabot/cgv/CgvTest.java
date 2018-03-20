@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 
 import com.bot.cinemabot.model.cgv.CgvItem;
@@ -32,6 +33,16 @@ public class CgvTest {
             System.out.println(items);
         }
 
+    }
+
+    @Test
+    public void test2_사용기간찾기 () throws IOException {
+        Document cgv = Jsoup.connect("http://www.cgv.co.kr/culture-event/event/detail-view.aspx?idx=17674&menu=0").get();
+        Elements elements = cgv.select("em.date");
+
+        System.out.println(elements.text());
+        System.out.println(elements.select("span").remove());
+        System.out.println(elements.text());
     }
 
 }

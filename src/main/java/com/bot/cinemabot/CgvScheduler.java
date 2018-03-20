@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -51,15 +52,16 @@ public class CgvScheduler {
         if (isChangedTicket) {
             CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
             String buyLink = cgv + newTicket.getLink().substring(1);
-            telegram.sendMessageToChannel("CGV\n%s\n%s\n%s원\n1+1관람권:%s\n구매링크:%s\n\n이미지:%s",
-                    newTicket.getDescription(), "기간", "가격", onePlusOneTickets.size(), buyLink, newTicket.getImageUrl()
+            String period = getPeriod(buyLink);
+            telegram.sendMessageToChannel("CGV\n오후 2시 판매시작!\n%s\n%s\n%s원\n1+1관람권:%s\n구매링크:%s\n\n이미지:%s",
+                    newTicket.getDescription(), period, "가격", onePlusOneTickets.size(), buyLink, newTicket.getImageUrl()
             );
             c = 1;
             cache1p1Tickets.clear();
             cache1p1Tickets.addAll(onePlusOneTickets);
         }
 
-        log.info("CGV\t\t- 호출횟수:{}, 지난관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
+        log.info("CGV      \t- 호출횟수:{}, 지난관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
                 callCount.incrementAndGet(), cache1p1Tickets.size(), c, isChangedTicket);
     }
 
@@ -68,7 +70,6 @@ public class CgvScheduler {
                 .filter(nextTickets -> cache1p1Tickets.stream().noneMatch(prevTickets -> prevTickets.getIdx() == nextTickets.getIdx()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("1+1 티켓 없음!!"));
-
     }
 
     private boolean isChangedTickets(List<CgvItem> next1p1Tickets) {
@@ -98,6 +99,18 @@ public class CgvScheduler {
 
     private boolean is1p1Ticket(CgvItem cgvItem) {
         return cgvItem.getDescription().contains("1+1") || cgvItem.getDescription().contains("원플러스원");
+    }
+
+    private String getPeriod (String buyLink) {
+        try {
+            Document cgv = Jsoup.connect(buyLink).get();
+            Elements elements = cgv.select("em.date");
+            elements.select("span").remove();
+            return elements.text();
+        } catch (IOException e) {
+            log.debug("CGV 사용기간 조회 실패. {}", buyLink);
+        }
+        return "CGV 사용기간 조회 실패.";
     }
 
 }
