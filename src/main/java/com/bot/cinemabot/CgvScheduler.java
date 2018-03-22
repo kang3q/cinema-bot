@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import com.bot.cinemabot.model.cgv.CgvItem;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import lombok.extern.slf4j.Slf4j;
@@ -82,9 +83,14 @@ public class CgvScheduler {
         String html = cgvDocument.html();
         Pattern pattern = Pattern.compile("var ( +)?jsonData( +)?=( +)?(\\[(.+)?\\])( +)?;?");
         Matcher matcher = pattern.matcher(html);
+        String json = null;
         if (matcher.find()) {
-            String json = matcher.group(4);
+            json = matcher.group(4);
+        }
+        try {
             return new Gson().fromJson(json, new TypeToken<List<CgvItem>>() {}.getType());
+        } catch (JsonSyntaxException e) {
+            log.debug("CGV json 파싱 실패! {}", json);
         }
         log.debug(html);
         throw new IllegalArgumentException("cgv 데이터 조회 실패!");
@@ -101,7 +107,7 @@ public class CgvScheduler {
         return cgvItem.getDescription().contains("1+1") || cgvItem.getDescription().contains("원플러스원");
     }
 
-    private String getPeriod (String buyLink) {
+    private String getPeriod(String buyLink) {
         try {
             Document cgv = Jsoup.connect(buyLink).get();
             Elements elements = cgv.select("em.date");
