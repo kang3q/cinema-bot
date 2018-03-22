@@ -1,8 +1,9 @@
 test: false
 
 # spring
-server:
-  port: 58080
+spring:
+  main:
+    web-environment: false
 
 # cinema-bot
 bot:
