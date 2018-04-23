@@ -1,9 +1,12 @@
 test: false
 
 # spring
-spring:
-  main:
-    web-environment: false
+#spring:
+#  main:
+#    web-environment: false
+
+server:
+  port: 8081
 
 # cinema-bot
 bot:
