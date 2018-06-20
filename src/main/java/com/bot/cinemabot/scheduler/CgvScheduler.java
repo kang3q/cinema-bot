@@ -1,4 +1,4 @@
-package com.bot.cinemabot;
+package com.bot.cinemabot.scheduler;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.bot.cinemabot.Telegram;
 import com.bot.cinemabot.model.cgv.CgvItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

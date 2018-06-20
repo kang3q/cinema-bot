@@ -1,4 +1,4 @@
-package com.bot.cinemabot;
+package com.bot.cinemabot.scheduler;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
+import com.bot.cinemabot.Telegram;
 import com.bot.cinemabot.model.lotte.CinemaItem;
 import com.bot.cinemabot.model.lotte.CinemaMallItem;
 import com.bot.cinemabot.model.lotte.CinemaResponse;
