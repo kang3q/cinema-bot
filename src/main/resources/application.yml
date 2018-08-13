@@ -16,7 +16,7 @@ bot:
     apiDomain: https://api.telegram.org
     token:
     chatId: 451573335
-    channel: cinema1p1
+    channel: "@cinema1p1"
     username: ksgTestBot
     api:
       sendMessage: https://api.telegram.org/bot%s/sendMessage
@@ -25,3 +25,8 @@ bot:
       api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
     cgv:
       api: http://www.cgv.co.kr/culture-event/event
+  shopping:
+    ppomppu:
+      url: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu
+    clien:
+      url: https://www.clien.net/service/board/jirum

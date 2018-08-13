@@ -34,7 +34,6 @@ public class Telegram {
 
     @PostConstruct
     public void init() {
-        channel = "@" + channel;
         sendMessageUrl = String.format(sendMessageUrl, token);
         sendMessageToBot("시네마봇 재시작 되었습니다.");
     }
