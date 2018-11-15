@@ -55,7 +55,7 @@ public class CgvScheduler {
             CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
             String buyLink = cgv + newTicket.getLink().substring(1);
             String period = getPeriod(buyLink);
-            telegram.sendMessageToChannel("CGV\n오후 2시 판매시작!\n%s\n%s\n%s원\n1+1관람권:%s\n구매링크:%s\n\n이미지:%s",
+            telegram.sendMessageToChannel("CGV\n오후 2시 판매시작!\n%s\n%s\n%s원\n1+1관람권:%s\n구매링크:%s", //\n\n이미지:%s",
                     newTicket.getDescription(), period, "가격", onePlusOneTickets.size(), buyLink, newTicket.getImageUrl()
             );
             c = 1;
