@@ -8,7 +8,7 @@ git fetch --all
 git reset --hard origin/master
 git pull origin master
 
-echo 'mvn package'
+echo 'mvn clean package'
 mvn -Dmaven.test.skip=true package
 
 sh run.sh
