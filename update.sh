@@ -11,6 +11,6 @@ git pull origin master
 echo 'mvn package'
 mvn -Dmaven.test.skip=true package
 
-sh start.sh
+sh run.sh
 
 echo 'END update.sh'
