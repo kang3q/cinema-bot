@@ -9,7 +9,7 @@ git reset --hard origin/master
 git pull origin master
 
 echo 'mvn clean package'
-mvn -Dmaven.test.skip=true package
+mvn -Dmaven.test.skip=true clean package
 
 sh run.sh
 
