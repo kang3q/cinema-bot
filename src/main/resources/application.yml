@@ -25,6 +25,9 @@ bot:
       api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
     cgv:
       api: http://www.cgv.co.kr/culture-event/event
+    megabox:
+      api: http://www.megabox.co.kr/pages/store/Store_MenuList.jsp
+      detailUrl: https://m.megabox.co.kr/?menuId=store_detail&itemCode=
   shopping:
     ppomppu:
       url: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu
