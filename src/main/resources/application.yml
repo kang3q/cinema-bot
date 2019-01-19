@@ -26,7 +26,7 @@ bot:
     cgv:
       api: http://www.cgv.co.kr/culture-event/event
     megabox:
-      api: http://www.megabox.co.kr/pages/store/Store_MenuList.jsp
+      api: https://m.megabox.co.kr/DataProvider
       detailUrl: https://m.megabox.co.kr/?menuId=store_detail&itemCode=
   shopping:
     ppomppu:
