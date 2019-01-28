@@ -45,7 +45,7 @@ public class MegaboxScheduler {
 				allTickets.size(), onePlusOneTickets.size());
 	}
 
-	@Scheduled(initialDelay = 1_000, fixedDelayString = "${bot.schedule.fixedDelay}")
+	@Scheduled(initialDelay = 40_000, fixedDelayString = "${bot.schedule.fixedDelay}")
 	private void aJob() {
 		List<MegaboxTicket> allTickets = getMegaboxTickets();
 		List<MegaboxTicket> onePlusOneTickets = filtered1p1Tickets(allTickets);

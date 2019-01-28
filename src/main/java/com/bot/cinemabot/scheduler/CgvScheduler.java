@@ -45,7 +45,7 @@ public class CgvScheduler {
         telegram.sendMessageToBot("CGV\n모든 1+1관람권: %s", cache1p1Tickets.size());
     }
 
-    @Scheduled(initialDelay = 30_000, fixedDelayString = "${bot.schedule.fixedDelay}")
+    @Scheduled(initialDelay = 20_000, fixedDelayString = "${bot.schedule.fixedDelay}")
     public void aJob() throws IOException {
         List<CgvItem> onePlusOneTickets = get1p1Tickets();
         boolean isChangedTicket = isChangedTickets(onePlusOneTickets);
