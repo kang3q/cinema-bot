@@ -11,7 +11,7 @@ public class MegaboxResponse {
 
 	public List<MegaboxTicket> convertTickets(final String detailUrl) {
 		return this.list.stream()
-				.map(item -> new MegaboxTicket(item.getItemDetailName(), item.getDisplayPrice_txt(), "", detailUrl + item.getItemCode(), item.getRemain_cnt() == 0))
+				.map(item -> new MegaboxTicket(item.getItemDetailName(), item.getDisplayPrice_txt(), "", detailUrl + item.getItemCode(), item.getItemCode(), item.getRemain_cnt() == 0))
 				.collect(Collectors.toList());
 	}
 }
