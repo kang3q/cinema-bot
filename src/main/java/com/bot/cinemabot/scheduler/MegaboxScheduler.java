@@ -59,7 +59,7 @@ public class MegaboxScheduler {
 			updateCache(onePlusOneTickets);
 		}
 
-		log.info("메가박스\t- 호출횟수:{}, 영화관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
+		log.info("메가박스\t\t- 호출횟수:{}, 영화관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
 				callCount.incrementAndGet(), allTickets.size(), cache1p1Tickets.size(), isChangedTicket);
 	}
 
@@ -118,7 +118,13 @@ public class MegaboxScheduler {
 				.filter(newTicket -> cache1p1Tickets.stream()
 						.noneMatch(oldTicket -> oldTicket.getName().equals(newTicket.getName())))
 				.findFirst()
-				.orElseThrow(() -> new IllegalArgumentException("메가박스 1+1 티켓이 없음!"));
+				.orElseThrow(() ->
+						new IllegalArgumentException(String.format(
+								"메가박스 1+1 티켓이 없음!\nnew:{}\nold:{}\n",
+								Utils.gson.toJson(new1p1Tickets),
+								Utils.gson.toJson(cache1p1Tickets)
+						))
+				);
 	}
 
 }
