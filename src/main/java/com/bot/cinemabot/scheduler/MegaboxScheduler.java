@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.annotation.PostConstruct;
@@ -46,16 +47,19 @@ public class MegaboxScheduler {
 	}
 
 	@Scheduled(initialDelay = 40_000, fixedDelayString = "${bot.schedule.fixedDelay}")
-	private void aJob() {
+	private void aJob() throws IOException {
 		List<MegaboxTicket> allTickets = getMegaboxTickets();
 		List<MegaboxTicket> onePlusOneTickets = filtered1p1Tickets(allTickets);
 		boolean isChangedTicket = isChangedTicket(onePlusOneTickets);
 		if (!onePlusOneTickets.isEmpty() && isChangedTicket) {
-			MegaboxTicket newTickets = getNew1p1Ticket(onePlusOneTickets);
-			telegram.sendMessageToBot("메가박스\n%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s", //\n\n이미지:%s",
-					newTickets.getName(), newTickets.getDate(), newTickets.getPrice(),
-					onePlusOneTickets.size(), allTickets.size(), newTickets.getLink()
-			);
+			MegaboxTicket new1p1Tickets = getNew1p1Ticket(onePlusOneTickets);
+			if (!StringUtils.isEmpty(new1p1Tickets.getName())) {
+				MegaboxTicket newTickets = getDetailInfo(new1p1Tickets.getItemCode());
+				telegram.sendMessageToBot("메가박스\n%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n", //\n\n이미지:%s",
+						newTickets.getName(), newTickets.getDate(), newTickets.getPrice(),
+						onePlusOneTickets.size(), allTickets.size(), newTickets.getLink()
+				);
+			}
 			updateCache(onePlusOneTickets);
 		}
 
@@ -118,13 +122,7 @@ public class MegaboxScheduler {
 				.filter(newTicket -> cache1p1Tickets.stream()
 						.noneMatch(oldTicket -> oldTicket.getName().equals(newTicket.getName())))
 				.findFirst()
-				.orElseThrow(() ->
-						new IllegalArgumentException(String.format(
-								"메가박스 1+1 티켓이 없음!\nnew:{}\nold:{}\n",
-								Utils.gson.toJson(new1p1Tickets),
-								Utils.gson.toJson(cache1p1Tickets)
-						))
-				);
+				.orElse(new MegaboxTicket());
 	}
 
 }
