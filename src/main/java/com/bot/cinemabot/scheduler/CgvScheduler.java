@@ -63,7 +63,7 @@ public class CgvScheduler {
             cache1p1Tickets.addAll(onePlusOneTickets);
         }
 
-        log.info("CGV      \t- 호출횟수:{}, 지난관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
+        log.info("CGV   \t- 호출횟수:{}, 지난관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
                 callCount.incrementAndGet(), cache1p1Tickets.size(), c, isChangedTicket);
     }
 
