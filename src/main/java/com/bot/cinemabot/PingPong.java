@@ -21,8 +21,8 @@ import com.bot.cinemabot.model.socket.Greeting;
 @Component
 public class PingPong extends TelegramLongPollingBot {
 
-    @Autowired
-    private SimpMessagingTemplate template;
+//    @Autowired
+//    private SimpMessagingTemplate template;
 
     @Value("${bot.telegram.token}")
     private String token;
@@ -51,7 +51,7 @@ public class PingPong extends TelegramLongPollingBot {
             response.setText(text);
             try {
                 execute(response);
-                template.convertAndSend("/topic/greetings", new Greeting(text));
+//                template.convertAndSend("/topic/greetings", new Greeting(text));
                 log.info("Sent message \"{}\" to {}", text, chatId);
             } catch (TelegramApiException e) {
                 log.error("Failed to send message \"{}\" to {} due to error: {}", text, chatId, e.getMessage());

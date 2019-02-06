@@ -18,8 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class Telegram {
 
-    @Autowired
-    private SimpMessagingTemplate template;
+//    @Autowired
+//    private SimpMessagingTemplate template;
 
     @Value("${bot.telegram.token}")
     private String token;
@@ -48,7 +48,7 @@ public class Telegram {
         log.info(message);
         String telegramSendMessageUrl = sendMessageUrl + String.format("?chat_id=%s&text=%s", chatId, message);
         String response = Utils.restTemplate.getForObject(telegramSendMessageUrl, String.class);
-        template.convertAndSend("/topic/greetings", new Greeting(message));
+//        template.convertAndSend("/topic/greetings", new Greeting(message));
         if (!response.contains("\"ok\":true")) {
             log.error("텔레그램 메시지 전송 실패. {}", response);
         }
@@ -62,7 +62,7 @@ public class Telegram {
             data.add("chat_id", channel);
             data.add("text", message);
             String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
-            template.convertAndSend("/topic/greetings", new Greeting(message));
+//            template.convertAndSend("/topic/greetings", new Greeting(message));
             if (!response.contains("\"ok\":true")) {
                 log.error("텔레그램 메시지 전송 실패. {}", response);
             }
