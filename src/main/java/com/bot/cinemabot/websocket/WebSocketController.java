@@ -1,4 +1,4 @@
-package com.bot.cinemabot;
+package com.bot.cinemabot.websocket;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;

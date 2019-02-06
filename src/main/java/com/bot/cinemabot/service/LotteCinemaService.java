@@ -1,4 +1,4 @@
-package com.bot.cinemabot.scheduler;
+package com.bot.cinemabot.service;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,13 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
-import com.bot.cinemabot.Telegram;
+import com.bot.cinemabot.utils.Telegram;
 import com.bot.cinemabot.model.lotte.CinemaItem;
 import com.bot.cinemabot.model.lotte.CinemaMallItem;
 import com.bot.cinemabot.model.lotte.CinemaResponse;
@@ -28,8 +27,8 @@ import com.bot.cinemabot.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
-public class LotteCinemaScheduler {
+@Service
+public class LotteCinemaService {
 
     @Autowired
     private Telegram telegram;
@@ -42,7 +41,7 @@ public class LotteCinemaScheduler {
     private List<CinemaItem> cache1p1Tickets;
 
     @PostConstruct
-    public void init() {
+    private void init() {
         CinemaResponse data = getCinemaData();
         CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();
         int allTicketsCount = allTicketsCount(cinemaMallItems);
@@ -53,7 +52,6 @@ public class LotteCinemaScheduler {
                 allTicketsCount, onePlusOneTickets.size());
     }
 
-    @Scheduled(initialDelay = 1_000, fixedDelayString = "${bot.schedule.fixedDelay}")
     public void aJob() {
         CinemaResponse data = getCinemaData();
         CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();

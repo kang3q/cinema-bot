@@ -1,4 +1,4 @@
-package com.bot.cinemabot.scheduler;
+package com.bot.cinemabot.service;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -15,20 +15,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
-import com.bot.cinemabot.Telegram;
+import com.bot.cinemabot.utils.Telegram;
 import com.bot.cinemabot.model.cgv.CgvItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-@Component
-public class CgvScheduler {
+@Service
+public class CgvService {
 
     @Autowired
     private Telegram telegram;
@@ -40,12 +39,11 @@ public class CgvScheduler {
     private List<CgvItem> cache1p1Tickets;
 
     @PostConstruct
-    public void init() throws IOException {
+    private void init() throws IOException {
         cache1p1Tickets = Collections.synchronizedList(get1p1Tickets());
         telegram.sendMessageToBot("CGV\n모든 1+1관람권: %s", cache1p1Tickets.size());
     }
 
-    @Scheduled(initialDelay = 20_000, fixedDelayString = "${bot.schedule.fixedDelay}")
     public void aJob() throws IOException {
         List<CgvItem> onePlusOneTickets = get1p1Tickets();
         boolean isChangedTicket = isChangedTickets(onePlusOneTickets);

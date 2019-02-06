@@ -1,4 +1,4 @@
-package com.bot.cinemabot;
+package com.bot.cinemabot.utils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

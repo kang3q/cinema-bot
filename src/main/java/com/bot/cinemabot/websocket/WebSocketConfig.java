@@ -1,4 +1,4 @@
-package com.bot.cinemabot;
+package com.bot.cinemabot.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

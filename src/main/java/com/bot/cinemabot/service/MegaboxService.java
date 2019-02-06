@@ -1,6 +1,6 @@
-package com.bot.cinemabot.scheduler;
+package com.bot.cinemabot.service;
 
-import com.bot.cinemabot.Telegram;
+import com.bot.cinemabot.utils.Telegram;
 import com.bot.cinemabot.model.megabox.MegaboxResponse;
 import com.bot.cinemabot.model.megabox.MegaboxTicket;
 import com.bot.cinemabot.utils.Utils;
@@ -9,8 +9,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
-public class MegaboxScheduler {
+@Service
+public class MegaboxService {
 
 	@Autowired
 	private Telegram telegram;
@@ -38,7 +37,7 @@ public class MegaboxScheduler {
 	final private AtomicInteger callCount = new AtomicInteger(0);
 
 	@PostConstruct
-	public void init() throws IOException {
+	private void init() {
 		List<MegaboxTicket> allTickets = getMegaboxTickets();
 		List<MegaboxTicket> onePlusOneTickets = filtered1p1Tickets(allTickets);
 		cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
@@ -46,8 +45,7 @@ public class MegaboxScheduler {
 				allTickets.size(), onePlusOneTickets.size());
 	}
 
-	@Scheduled(initialDelay = 40_000, fixedDelayString = "${bot.schedule.fixedDelay}")
-	private void aJob() throws IOException {
+	public void aJob() throws IOException {
 		List<MegaboxTicket> allTickets = getMegaboxTickets();
 		List<MegaboxTicket> onePlusOneTickets = filtered1p1Tickets(allTickets);
 		boolean isChangedTicket = isChangedTicket(onePlusOneTickets);
