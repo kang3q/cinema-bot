@@ -53,7 +53,7 @@ public class MegaboxService {
 			MegaboxTicket new1p1Tickets = getNew1p1Ticket(onePlusOneTickets);
 			if (!StringUtils.isEmpty(new1p1Tickets.getName())) {
 				MegaboxTicket newTickets = getDetailInfo(new1p1Tickets.getItemCode());
-				telegram.sendMessageToBot("메가박스\n%s\n%s\n%s원\n개별사용 불가\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n", //\n\n이미지:%s",
+				telegram.sendMessageToChannel("메가박스\n%s\n%s\n%s원(개별사용 불가)\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s\n",
 						newTickets.getName(), newTickets.getDate(), newTickets.getPrice(),
 						onePlusOneTickets.size(), allTickets.size(), newTickets.getLink()
 				);
