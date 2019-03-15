@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.bot.cinemabot.model.lotte.MenuItem;
+import com.bot.cinemabot.model.lotte.ProductItem;
+import com.bot.cinemabot.model.lotte.LCMallMainItems;
+import com.bot.cinemabot.model.lotte.LotteCinemaResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -18,10 +22,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import com.bot.cinemabot.utils.Telegram;
-import com.bot.cinemabot.model.lotte.CinemaItem;
-import com.bot.cinemabot.model.lotte.CinemaMallItem;
-import com.bot.cinemabot.model.lotte.CinemaResponse;
-import com.bot.cinemabot.model.lotte.DisplayItem;
 import com.bot.cinemabot.utils.Utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +38,14 @@ public class LotteCinemaService {
 
     final private AtomicInteger callCount = new AtomicInteger(0);
     final private AtomicInteger cacheAllTicketsCount = new AtomicInteger(0);
-    private List<CinemaItem> cache1p1Tickets;
+    private List<ProductItem> cache1p1Tickets;
 
     @PostConstruct
     private void init() {
-        CinemaResponse data = getCinemaData();
-        CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();
-        int allTicketsCount = allTicketsCount(cinemaMallItems);
-        List<CinemaItem> onePlusOneTickets = get1p1Tickets(cinemaMallItems);
+        LotteCinemaResponse data = getCinemaData();
+        LCMallMainItems lcMallMainItems = data.getLCMall_Main_Items();
+        int allTicketsCount = allTicketsCount(lcMallMainItems);
+        List<ProductItem> onePlusOneTickets = get1p1Tickets(lcMallMainItems);
         cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
 
         telegram.sendMessageToBot("롯데시네마\n모든 관람권: %s\n1+1 관람권: %s",
@@ -53,10 +53,10 @@ public class LotteCinemaService {
     }
 
     public void aJob() {
-        CinemaResponse data = getCinemaData();
-        CinemaMallItem cinemaMallItems = data.getCinemaMallItemLists();
-        List<CinemaItem> onePlusOneTickets = get1p1Tickets(cinemaMallItems);
-        int allTicketsCount = allTicketsCount(cinemaMallItems);
+        LotteCinemaResponse data = getCinemaData();
+        LCMallMainItems lcMallMainItems = data.getLCMall_Main_Items();
+        List<ProductItem> onePlusOneTickets = get1p1Tickets(lcMallMainItems);
+        int allTicketsCount = allTicketsCount(lcMallMainItems);
 
         updateCache(allTicketsCount);
 
@@ -65,15 +65,15 @@ public class LotteCinemaService {
         if (allTicketsCount == -1) {
             log.debug(Utils.gson.toJson(data));
         } else if (isChangedTicket) {
-            CinemaItem movieItem = getNew1p1Ticket(cinemaMallItems);
+            ProductItem movieItem = getNew1p1Ticket(lcMallMainItems);
             if (!StringUtils.isEmpty(movieItem.getDisplayItemName())) {
                 String buyLink = String.format(
-                        "http://www.lottecinema.co.kr/LCHS/Contents/Cinema-Mall/gift-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s",
-                        movieItem.getDisplayItemID(), movieItem.getDisplayMiddleClassificationCode()
+                         "http://www.lottecinema.co.kr/LCMW/Contents/Cinema-Mall/e-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s&displayMenuID=%s",
+                        movieItem.getDisplayItemID(), movieItem.getDisplayLargeClassificationCode(), movieItem.getMenuId()
                 );
                 telegram.sendMessageToChannel("롯데시네마\n%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s", //\n\n이미지:%s",
                         movieItem.getDisplayItemName(), movieItem.getUseRestrictionsDayName(), movieItem.getDiscountSellPrice(),
-                        onePlusOneTickets.size(), cacheAllTicketsCount, buyLink, movieItem.getItemImageUrl()
+                        onePlusOneTickets.size(), cacheAllTicketsCount, buyLink //, movieItem.getItemImageNm()
                 );
             }
             updateCache(onePlusOneTickets);
@@ -83,7 +83,7 @@ public class LotteCinemaService {
                 callCount.incrementAndGet(), cacheAllTicketsCount, cache1p1Tickets.size(), isChangedTicket);
     }
 
-    private boolean isChangedTicket(List<CinemaItem> newTickets) {
+    private boolean isChangedTicket(List<ProductItem> newTickets) {
         boolean a = !newTickets
                 .stream()
                 .allMatch(newTicket ->
@@ -97,47 +97,45 @@ public class LotteCinemaService {
         return a || b;
     }
 
-    private int allTicketsCount(CinemaMallItem cinemaMallItems) {
-        return cinemaMallItems.getCinemaMallClassifications().getItems()
+    private int allTicketsCount(LCMallMainItems lcMallMainItems) {
+        return lcMallMainItems.getMenu_Items().getItems()
                 .stream()
-                .filter(item -> "20".equals(item.getDisplayLargeClassificationCode()))
-                .filter(item -> "10".equals(item.getDisplayMiddleClassificationCode()))
+                .filter(menuItem -> menuItem.getMenuId() == 3 && menuItem.getMenuTitle().equals("관람권"))
                 .findFirst()
-                .map(DisplayItem::getItemCount)
+                .map(MenuItem::getProdCount)
                 .orElse(-1);
     }
 
-    private List<CinemaItem> get1p1Tickets(CinemaMallItem cinemaMallItems) {
-        return cinemaMallItems.getItems().getItems()
+    private List<ProductItem> get1p1Tickets(LCMallMainItems lcMallMainItems) {
+        return lcMallMainItems.getProduct_Items().getItems()
                 .stream()
-                .filter(item -> "20".equals(item.getDisplayLargeClassificationCode()))
-                .filter(item -> "10".equals(item.getDisplayMiddleClassificationCode()))
-                .filter(item -> "영화관람권".equals(item.getDisplayMiddleClassificationName()))
+                .filter(item -> 20 == item.getDisplayLargeClassificationCode())
+                .filter(item -> 40 == item.getCombiItmDivCd())
                 .filter(item -> item.getDisplayItemName().contains("1+1") || item.getDisplayItemName().contains("얼리버드"))
                 .collect(Collectors.toList());
     }
 
-    private CinemaItem getNew1p1Ticket(CinemaMallItem cinemaMallItems) {
-        return get1p1Tickets(cinemaMallItems)
+    private ProductItem getNew1p1Ticket(LCMallMainItems lcMallMainItems) {
+        return get1p1Tickets(lcMallMainItems)
                 .stream()
                 .filter(newTicket -> cache1p1Tickets.stream()
                         .noneMatch(oldTicket -> oldTicket.getDisplayItemName().equals(newTicket.getDisplayItemName())))
                 .findFirst()
-                .orElse(new CinemaItem());
+                .orElse(new ProductItem());
     }
 
-    private CinemaResponse getCinemaData() {
+    private LotteCinemaResponse getCinemaData() {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("paramList",
-                "{\"MethodName\":\"CinemaMallGiftItemList\",\"channelType\":\"HO\",\"osType\":\"Chrome\",\"osVersion\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36\",\"multiLanguageID\":\"KR\",\"classificationCode\":\"20\"}");
+                "{\"MethodName\":\"GetLCMallMain\",\"channelType\":\"MW\",\"osType\":\"Chrome\",\"osVersion\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36\",\"multiLanguageID\":\"KR\",\"menuID\":\"3\"}");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
         String jsonResponse = Utils.restTemplate.postForObject(lotte, request, String.class);
-        return Utils.gson.fromJson(jsonResponse, CinemaResponse.class);
+        return Utils.gson.fromJson(jsonResponse, LotteCinemaResponse.class);
     }
 
     private void updateCache(int allTicketsCount) {
@@ -146,7 +144,7 @@ public class LotteCinemaService {
         }
     }
 
-    private void updateCache(List<CinemaItem> tickets) {
+    private void updateCache(List<ProductItem> tickets) {
         cache1p1Tickets.clear();
         cache1p1Tickets.addAll(tickets);
     }
