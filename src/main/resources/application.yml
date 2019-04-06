@@ -11,7 +11,7 @@ server:
 # cinema-bot
 bot:
   schedule:
-    fixedDelay: 60000
+    fixedDelay: 120000
   telegram:
     apiDomain: https://api.telegram.org
     token:

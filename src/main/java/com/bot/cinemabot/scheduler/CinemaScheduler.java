@@ -28,12 +28,12 @@ public class CinemaScheduler {
 		lotteCinemaService.aJob();
 	}
 
-	@Scheduled(initialDelay = 20_000, fixedDelayString = "${bot.schedule.fixedDelay}")
+	@Scheduled(initialDelay = 40_000, fixedDelayString = "${bot.schedule.fixedDelay}")
 	public void cgv() throws IOException {
 		cgvService.aJob();
 	}
 
-	@Scheduled(initialDelay = 40_000, fixedDelayString = "${bot.schedule.fixedDelay}")
+	@Scheduled(initialDelay = 80_000, fixedDelayString = "${bot.schedule.fixedDelay}")
 	public void megabox() throws IOException {
 		megaboxService.aJob();
 	}
