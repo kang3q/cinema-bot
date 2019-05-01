@@ -67,13 +67,14 @@ public class LotteCinemaService {
         } else if (isChangedTicket) {
             ProductItem movieItem = getNew1p1Ticket(lcMallMainItems);
             if (!StringUtils.isEmpty(movieItem.getDisplayItemName())) {
+                ProductItem movieItemDetail = getDetailCinemaData(movieItem.getDisplayItemID());
                 String buyLink = String.format(
                          "http://www.lottecinema.co.kr/LCMW/Contents/Cinema-Mall/e-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s&displayMenuID=%s",
-                        movieItem.getDisplayItemID(), movieItem.getDisplayLargeClassificationCode(), movieItem.getMenuId()
+                        movieItemDetail.getDisplayItemID(), movieItemDetail.getDisplayLargeClassificationCode(), movieItemDetail.getMenuId()
                 );
                 telegram.sendMessageToChannel("롯데시네마\n%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s", //\n\n이미지:%s",
-                        movieItem.getDisplayItemName(), movieItem.getUseRestrictionsDayName(), movieItem.getDiscountSellPrice(),
-                        onePlusOneTickets.size(), cacheAllTicketsCount, buyLink //, movieItem.getItemImageNm()
+                        movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), movieItemDetail.getDiscountSellPrice(),
+                        onePlusOneTickets.size(), cacheAllTicketsCount, buyLink //, movieItemDetail.getItemImageNm()
                 );
             }
             updateCache(onePlusOneTickets);
@@ -136,6 +137,22 @@ public class LotteCinemaService {
 
         String jsonResponse = Utils.restTemplate.postForObject(lotte, request, String.class);
         return Utils.gson.fromJson(jsonResponse, LotteCinemaResponse.class);
+    }
+
+    private ProductItem getDetailCinemaData(String itemID) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("paramList",
+                 "{\"MethodName\":\"GetLCMallDetail\",\"channelType\":\"MW\",\"osType\":\"Chrome\",\"osVersion\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36\",\"multiLanguageID\":\"KR\",\"menuID\":\"3\",\"itemID\":\"" + itemID + "\",\"classificationCode\":\"20\"}"
+        );
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+        String jsonResponse = Utils.restTemplate.postForObject(lotte, request, String.class);
+        LotteCinemaResponse response = Utils.gson.fromJson(jsonResponse, LotteCinemaResponse.class);
+        return response.getLCMall_Detail_Items().getProduct_Items().getItems().get(0);
     }
 
     private void updateCache(int allTicketsCount) {
