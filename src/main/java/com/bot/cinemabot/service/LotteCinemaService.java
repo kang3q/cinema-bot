@@ -72,7 +72,7 @@ public class LotteCinemaService {
                          "http://www.lottecinema.co.kr/LCMW/Contents/Cinema-Mall/e-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s&displayMenuID=%s",
                         movieItemDetail.getDisplayItemID(), movieItemDetail.getDisplayLargeClassificationCode(), movieItemDetail.getMenuId()
                 );
-                telegram.sendMessageToChannel("롯데시네마\n%s\n%s\n%s원\n1+1관람권:%s, 영화관람권:%s\n구매링크:%s", //\n\n이미지:%s",
+                telegram.sendMessageToChannel("롯데시네마\n%s\n%s\n%s원\n1+1영화:%s종, 티켓:%s종\n구매링크:%s", //\n\n이미지:%s",
                         movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), movieItemDetail.getDiscountSellPrice(),
                         onePlusOneTickets.size(), cacheAllTicketsCount, buyLink //, movieItemDetail.getItemImageNm()
                 );
