@@ -23,17 +23,17 @@ public class CinemaScheduler {
 		this.megaboxService = megaboxService;
 	}
 
-	@Scheduled(initialDelay = 1_000, fixedDelayString = "${bot.schedule.fixedDelay}")
+	@Scheduled(cron = "0 0/2 08-20 ? * MON-FRI") // 월~금, 매월, 아무 날이나, 08:00 ~ 20:00, 2분마다, 0초에
 	public void lotteCinema() {
 		lotteCinemaService.aJob();
 	}
 
-	@Scheduled(initialDelay = 40_000, fixedDelayString = "${bot.schedule.fixedDelay}")
+	@Scheduled(cron = "20 0/2 08-20 ? * MON-FRI") // 월~금, 매월, 아무 날이나, 08:00 ~ 20:00, 2분마다, 20초에
 	public void cgv() throws IOException {
 		cgvService.aJob();
 	}
 
-	@Scheduled(initialDelay = 80_000, fixedDelayString = "${bot.schedule.fixedDelay}")
+	@Scheduled(cron = "40 0/2 08-20 ? * MON-FRI") // 월~금, 매월, 아무 날이나, 08:00 ~ 20:00, 2분마다, 40초에
 	public void megabox() throws IOException {
 		megaboxService.aJob();
 	}
