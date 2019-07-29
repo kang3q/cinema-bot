@@ -1,4 +1,4 @@
-sh /home/pi/cinema-bot/stop.sh
+sh stop.sh
 
 git config user.email "1004w455@naver.com"
 git config user.name "1004w455"
@@ -11,6 +11,6 @@ git pull origin master
 echo 'mvn clean package'
 mvn -Dmaven.test.skip=true clean package
 
-sh /home/pi/cinema-bot/run.sh
+sh run.sh
 
 echo 'END update.sh'
