@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.bot.cinemabot.model.MessageFormat;
 import com.bot.cinemabot.model.lotte.MenuItem;
 import com.bot.cinemabot.model.lotte.ProductItem;
 import com.bot.cinemabot.model.lotte.LCMallMainItems;
@@ -33,7 +34,7 @@ public class LotteCinemaService {
     @Autowired
     private Telegram telegram;
 
-    @Value("${bot.cinema.lotte.api}")
+    @Value("${spring.bot.cinema.lotte.api}")
     private String lotte;
 
     final private AtomicInteger callCount = new AtomicInteger(0);
@@ -72,10 +73,8 @@ public class LotteCinemaService {
                          "http://www.lottecinema.co.kr/LCMW/Contents/Cinema-Mall/e-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s&displayMenuID=%s",
                         movieItemDetail.getDisplayItemID(), movieItemDetail.getDisplayLargeClassificationCode(), movieItemDetail.getMenuId()
                 );
-                telegram.sendMessageToChannel("롯데시네마\n%s\n%s\n%s원\n1+1영화:%s종, 티켓:%s종\n구매링크:%s", //\n\n이미지:%s",
-                        movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), movieItemDetail.getDiscountSellPrice(),
-                        onePlusOneTickets.size(), cacheAllTicketsCount, buyLink //, movieItemDetail.getItemImageNm()
-                );
+                MessageFormat format = new MessageFormat("롯데시네마", movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), String.valueOf(movieItemDetail.getDiscountSellPrice()), String.valueOf(onePlusOneTickets.size()), String.valueOf(cacheAllTicketsCount), buyLink);
+                telegram.sendHTMLToChannel(format);
             }
             updateCache(onePlusOneTickets);
         }

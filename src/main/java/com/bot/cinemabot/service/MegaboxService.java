@@ -1,5 +1,6 @@
 package com.bot.cinemabot.service;
 
+import com.bot.cinemabot.model.MessageFormat;
 import com.bot.cinemabot.utils.Telegram;
 import com.bot.cinemabot.model.megabox.MegaboxResponse;
 import com.bot.cinemabot.model.megabox.MegaboxTicket;
@@ -28,9 +29,9 @@ public class MegaboxService {
 	@Autowired
 	private Telegram telegram;
 
-	@Value("${bot.cinema.megabox.api}")
+	@Value("${spring.bot.cinema.megabox.api}")
 	private String megabox;
-	@Value("${bot.cinema.megabox.detailUrl}")
+	@Value("${spring.bot.cinema.megabox.detailUrl}")
 	private String detailUrl;
 
 	private List<MegaboxTicket> cache1p1Tickets;
@@ -53,10 +54,8 @@ public class MegaboxService {
 			MegaboxTicket new1p1Tickets = getNew1p1Ticket(onePlusOneTickets);
 			if (!StringUtils.isEmpty(new1p1Tickets.getName())) {
 				MegaboxTicket newTickets = getDetailInfo(new1p1Tickets.getItemCode());
-				telegram.sendMessageToChannel("메가박스\n%s\n%s\n%s원(개별사용 불가)\n1+1영화:%s종, 티켓:%s종\n구매링크:%s\n",
-						newTickets.getName(), newTickets.getDate(), newTickets.getPrice(),
-						onePlusOneTickets.size(), allTickets.size(), newTickets.getLink()
-				);
+				MessageFormat format = new MessageFormat("메가박스", newTickets.getName(), newTickets.getDate(), newTickets.getPrice(), String.valueOf(onePlusOneTickets.size()), String.valueOf(allTickets.size()), newTickets.getLink());
+				telegram.sendHTMLToChannel(format);
 			}
 			updateCache(onePlusOneTickets);
 		}

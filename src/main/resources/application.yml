@@ -1,35 +1,66 @@
 test: false
 
-# spring
-#spring:
-#  main:
-#    web-environment: false
-
 server:
   port: 8081
 
-# cinema-bot
-bot:
-  schedule:
-    fixedDelay: 120000
-  telegram:
-    apiDomain: https://api.telegram.org
-    token:
-    chatId: 451573335
-    channel: "@cinema1p1"
-    username: ksgTestBot
-    api:
-      sendMessage: https://api.telegram.org/bot%s/sendMessage
-  cinema:
-    lotte:
-      api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
-    cgv:
-      api: http://www.cgv.co.kr/culture-event/event
-    megabox:
-      api: https://m.megabox.co.kr/DataProvider
-      detailUrl: https://m.megabox.co.kr/?menuId=store_detail&itemCode=
-  shopping:
-    ppomppu:
-      url: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu
-    clien:
-      url: https://www.clien.net/service/board/jirum
+spring:
+  profiles:
+    active: local
+
+# local 환경
+---
+spring:
+  profiles: local
+  bot:
+    schedule:
+      fixedDelay: 120000
+    telegram:
+      apiDomain: https://api.telegram.org
+      username: ksgTest2Bot
+      token:
+      chatId: 451573335
+      channel: "@ktestch"
+      api:
+        sendMessage: https://api.telegram.org/bot%s/sendMessage
+    cinema:
+      lotte:
+        api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
+      cgv:
+        api: http://www.cgv.co.kr/culture-event/event
+      megabox:
+        api: https://m.megabox.co.kr/DataProvider
+        detailUrl: https://m.megabox.co.kr/?menuId=store_detail&itemCode=
+    shopping:
+      ppomppu:
+        url: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu
+      clien:
+        url: https://www.clien.net/service/board/jirum
+
+# production 환경
+---
+spring:
+  profiles: production
+  bot:
+    schedule:
+      fixedDelay: 120000
+    telegram:
+      apiDomain: https://api.telegram.org
+      username: ksgTestBot
+      token:
+      chatId: 451573335
+      channel: "@cinema1p1"
+      api:
+        sendMessage: https://api.telegram.org/bot%s/sendMessage
+    cinema:
+      lotte:
+        api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
+      cgv:
+        api: http://www.cgv.co.kr/culture-event/event
+      megabox:
+        api: https://m.megabox.co.kr/DataProvider
+        detailUrl: https://m.megabox.co.kr/?menuId=store_detail&itemCode=
+    shopping:
+      ppomppu:
+        url: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu
+      clien:
+        url: https://www.clien.net/service/board/jirum

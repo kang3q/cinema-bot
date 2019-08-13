@@ -24,10 +24,10 @@ public class PingPong extends TelegramLongPollingBot {
 //    @Autowired
 //    private SimpMessagingTemplate template;
 
-    @Value("${bot.telegram.token}")
+    @Value("${spring.bot.telegram.token}")
     private String token;
 
-    @Value("${bot.telegram.username}")
+    @Value("${spring.bot.telegram.username}")
     private String username;
 
     @Override

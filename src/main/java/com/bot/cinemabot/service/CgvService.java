@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.bot.cinemabot.model.MessageFormat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -32,7 +33,7 @@ public class CgvService {
     @Autowired
     private Telegram telegram;
 
-    @Value("${bot.cinema.cgv.api}")
+    @Value("${spring.bot.cinema.cgv.api}")
     private String cgv;
 
     final private AtomicInteger callCount = new AtomicInteger(0);
@@ -53,9 +54,9 @@ public class CgvService {
             CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
             String buyLink = cgv + newTicket.getLink().substring(1);
             String period = getPeriod(buyLink);
-            telegram.sendMessageToChannel("CGV\n오후 2시 판매시작!(or 4시)\n%s\n%s\n1+1영화:%s종\n구매링크:%s",
-                    newTicket.getDescription(), period, onePlusOneTickets.size(), buyLink
-            );
+            String title = "오후 2시 판매시작!(or 4시)" + newTicket.getDescription();
+            MessageFormat format = new MessageFormat("CGV", title, period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink);
+            telegram.sendHTMLToChannel(format);
             c = 1;
             cache1p1Tickets.clear();
             cache1p1Tickets.addAll(onePlusOneTickets);

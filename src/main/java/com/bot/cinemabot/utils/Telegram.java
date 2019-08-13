@@ -3,6 +3,7 @@ package com.bot.cinemabot.utils;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import com.bot.cinemabot.model.MessageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -21,13 +22,13 @@ public class Telegram {
 //    @Autowired
 //    private SimpMessagingTemplate template;
 
-    @Value("${bot.telegram.token}")
+    @Value("${spring.bot.telegram.token}")
     private String token;
-    @Value("${bot.telegram.chatId}")
+    @Value("${spring.bot.telegram.chatId}")
     private String chatId;
-    @Value("${bot.telegram.channel}")
+    @Value("${spring.bot.telegram.channel}")
     private String channel;
-    @Value("${bot.telegram.api.sendMessage}")
+    @Value("${spring.bot.telegram.api.sendMessage}")
     private String sendMessageUrl;
     @Value("${test}")
     private String TEST;
@@ -46,8 +47,10 @@ public class Telegram {
     public void sendMessageToBot(String message, Object... obj) {
         message = String.format(message, obj);
         log.info(message);
-        String telegramSendMessageUrl = sendMessageUrl + String.format("?chat_id=%s&text=%s", chatId, message);
-        String response = Utils.restTemplate.getForObject(telegramSendMessageUrl, String.class);
+        LinkedMultiValueMap data = new LinkedMultiValueMap();
+        data.add("chat_id", chatId);
+        data.add("text", message);
+        String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
 //        template.convertAndSend("/topic/greetings", new Greeting(message));
         if (!response.contains("\"ok\":true")) {
             log.error("텔레그램 메시지 전송 실패. {}", response);
@@ -61,6 +64,39 @@ public class Telegram {
             LinkedMultiValueMap data = new LinkedMultiValueMap();
             data.add("chat_id", channel);
             data.add("text", message);
+            String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
+//            template.convertAndSend("/topic/greetings", new Greeting(message));
+            if (!response.contains("\"ok\":true")) {
+                log.error("텔레그램 메시지 전송 실패. {}", response);
+            }
+        }
+    }
+
+    public void sendMessageToChannel(final MessageFormat mf) {
+        String message = mf.convertText();
+        log.info(message);
+        if (!Boolean.valueOf(TEST)) {
+            LinkedMultiValueMap data = new LinkedMultiValueMap();
+            data.add("chat_id", channel);
+            data.add("text", message);
+            System.out.println(sendMessageUrl);
+            String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
+//            template.convertAndSend("/topic/greetings", new Greeting(message));
+            if (!response.contains("\"ok\":true")) {
+                log.error("텔레그램 메시지 전송 실패. {}", response);
+            }
+        }
+    }
+
+    public void sendHTMLToChannel(final MessageFormat mf) {
+        String message = mf.convertHTML();
+        log.info(message);
+        if (!Boolean.valueOf(TEST)) {
+            LinkedMultiValueMap data = new LinkedMultiValueMap();
+            data.add("chat_id", channel);
+            data.add("text", message);
+            data.add("parse_mode", "html");
+            System.out.println(sendMessageUrl);
             String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
 //            template.convertAndSend("/topic/greetings", new Greeting(message));
             if (!response.contains("\"ok\":true")) {
