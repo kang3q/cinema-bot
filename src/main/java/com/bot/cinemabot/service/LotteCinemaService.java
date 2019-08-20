@@ -74,7 +74,7 @@ public class LotteCinemaService {
                         movieItemDetail.getDisplayItemID(), movieItemDetail.getDisplayLargeClassificationCode(), movieItemDetail.getMenuId()
                 );
                 MessageFormat format = new MessageFormat("롯데시네마", movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), String.valueOf(movieItemDetail.getDiscountSellPrice()), String.valueOf(onePlusOneTickets.size()), String.valueOf(cacheAllTicketsCount), buyLink);
-                telegram.sendHTMLToChannel(format);
+                telegram.sendMessageToChannel(format);
             }
             updateCache(onePlusOneTickets);
         }

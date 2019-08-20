@@ -54,9 +54,8 @@ public class CgvService {
             CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
             String buyLink = cgv + newTicket.getLink().substring(1);
             String period = getPeriod(buyLink);
-            String title = "오후 2시 판매시작!(or 4시)" + newTicket.getDescription();
-            MessageFormat format = new MessageFormat("CGV", title, period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink);
-            telegram.sendHTMLToChannel(format);
+            MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink);
+            telegram.sendMessageToChannel(format);
             c = 1;
             cache1p1Tickets.clear();
             cache1p1Tickets.addAll(onePlusOneTickets);
