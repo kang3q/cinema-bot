@@ -70,7 +70,7 @@ public class LotteCinemaService {
             if (!StringUtils.isEmpty(movieItem.getDisplayItemName())) {
                 ProductItem movieItemDetail = getDetailCinemaData(movieItem.getDisplayItemID());
                 String buyLink = String.format(
-                         "http://www.lottecinema.co.kr/LCMW/Contents/Cinema-Mall/e-shop-detail.aspx?displayItemID=%s&displayMiddleClassification=%s&displayMenuID=%s",
+                         "https://www.lottecinema.co.kr/NLCMW/CinemaMall/Detail?ItemId=%s&ClassificationCode=%s&MenuId=%s",
                         movieItemDetail.getDisplayItemID(), movieItemDetail.getDisplayLargeClassificationCode(), movieItemDetail.getMenuId()
                 );
                 MessageFormat format = new MessageFormat("롯데시네마", movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), String.valueOf(movieItemDetail.getDiscountSellPrice()), String.valueOf(onePlusOneTickets.size()), String.valueOf(cacheAllTicketsCount), buyLink);
