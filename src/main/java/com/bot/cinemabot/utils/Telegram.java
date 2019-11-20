@@ -32,16 +32,18 @@ public class Telegram {
     private String sendMessageUrl;
     @Value("${test}")
     private String TEST;
+    @Value("${spring.profiles}")
+    private String profile;
 
     @PostConstruct
     public void init() {
         sendMessageUrl = String.format(sendMessageUrl, token);
-        sendMessageToBot("시네마봇 재시작 되었습니다.");
+        sendMessageToBot(String.format("[%s] 시네마봇 재시작 되었습니다.", profile));
     }
 
     @PreDestroy
     public void destroy() {
-        sendMessageToBot("시네마봇 종료 되었습니다.");
+        sendMessageToBot(String.format("[%s] 시네마봇 종료 되었습니다.", profile));
     }
 
     public void sendMessageToBot(String message, Object... obj) {
