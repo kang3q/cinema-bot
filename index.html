@@ -18,10 +18,9 @@ var queries = (function () {
   var queries = {}
   location.search.substr(1)
     .split('&')
-    .map(decodeURIComponent)
     .forEach(function (param) {
       var data = param.split('=')
-      queries[data[0]] = data[1]
+      queries[data[0]] = decodeURIComponent(data[1])
     })
   return queries
 })()
