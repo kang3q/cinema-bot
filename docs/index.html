@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>영화알림</title>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script>
+    function start() {
+      // 2. Initialize the JavaScript client library.
+      gapi.client.init({
+        'apiKey': 'AIzaSyCTNqqcP0PcpbyNkyvUxgrtRvnqXqB7U4U',
+        // clientId and scope are optional if auth is not required.
+        //'clientId': '601826383195-jshjvb343kq9m4d7im9mqgqiu78b75ad.apps.googleusercontent.com',
+        //'scope': 'profile',
+      }).then(function() {
+        // 3. Initialize and make the API request.
+        return gapi.client.request({
+          'path': 'https://sheets.googleapis.com/v4/spreadsheets/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/values/시트1',
+        })
+      }).then(function(response) {
+        console.log(response.result);
+      }, function(reason) {
+        console.log('Error: ' + reason.result.error.message);
+      });
+    };
+    // 1. Load the JavaScript client library.
+    gapi.load('client', start);
+  </script>
+</head>
+
+<body>
+<h1>영화알림 채널에 오신것을 환영합니다.</h1>
+<p>롯데시네마, CGV, 메가박스의 1+1 알림을 제공받으세요.</p>
+텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
+<br>
+<br>
+구매링크: <a id="url" href="#"></a>
+<script>
+var queries = (function () {
+  var queries = {}
+  location.search.substr(1)
+    .split('&')
+    .forEach(function (param) {
+      var data = param.split('=')
+      queries[data[0]] = decodeURIComponent(data[1])
+    })
+  return queries
+})()
+
+var $ele = document.getElementById('url')
+// 서비스명
+$ele.innerText = queries.service
+// 링크 입력
+$ele.href = queries.url
+
+
+function write () {
+  $.ajax({
+    type: 'post',
+    url: 'https://script.google.com/macros/s/AKfycbzGf6aN5oRmIahIo_Pnup5Q95fJ4nA0PUvjikEoPjD-tCa9D_g/exec',
+    data: {key: 2, value: '가나다라'},
+    success: function(response){
+      console.log(response)
+    }
+  })
+}
+
+function read () {
+  $.ajax({
+    type: 'get',
+    url: 'https://spreadsheets.google.com/feeds/list/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/1/public/basic?alt=json-in-script',
+    success: function(response){
+      console.log(response)
+    }
+  })
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
