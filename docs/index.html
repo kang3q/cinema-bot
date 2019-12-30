@@ -8,6 +8,7 @@
   <script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script src="https://apis.google.com/js/api.js"></script>
   <script>
+    var response
     function start() {
       // 2. Initialize the JavaScript client library.
       gapi.client.init({
@@ -20,8 +21,9 @@
         return gapi.client.request({
           'path': 'https://sheets.googleapis.com/v4/spreadsheets/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/values/시트1',
         })
-      }).then(function(response) {
-        console.log(response.result)
+      }).then(function(res) {
+      	response = res.result
+        console.log(res.result)
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message)
       })
@@ -39,16 +41,6 @@
 <br>
 구매링크: <a id="url" href="#">잠시만 기다려주세요.</a>
 <script>
-function fetch () {
-  $.ajax({
-    type: 'get',
-    url: 'https://spreadsheets.google.com/feeds/list/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/1/public/basic?alt=json-in-script',
-    success: function(res){
-      console.log(res)
-      response = res
-    },
-  })
-}
 function getQuery() {
   var queries = {}
     location.search.substr(1)
@@ -67,9 +59,7 @@ function setInfo(googleSheet) {
   $ele.href = decodeURIComponent(googleSheet[6])
 }
 
-var response
 var queries = getQuery()
-fetch()
 
 var i = setInterval(function() {
   if (!response) return
