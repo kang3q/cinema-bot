@@ -1,5 +1,3 @@
-test: false
-
 server:
   port: 8081
 
@@ -12,8 +10,6 @@ spring:
 spring:
   profiles: local
   bot:
-    schedule:
-      fixedDelay: 120000
     telegram:
       apiDomain: https://api.telegram.org
       username: ksgTest2Bot
@@ -41,8 +37,6 @@ spring:
 spring:
   profiles: production
   bot:
-    schedule:
-      fixedDelay: 120000
     telegram:
       apiDomain: https://api.telegram.org
       username: ksgTestBot
