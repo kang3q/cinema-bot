@@ -37,50 +37,48 @@
 텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
 <br>
 <br>
-구매링크: <a id="url" href="#"></a>
+구매링크: <a id="url" href="#">잠시만 기다려주세요.</a>
 <script>
-var queries = (function () {
-  var queries = {}
-  location.search.substr(1)
-    .split('&')
-    .forEach(function (param) {
-      var data = param.split('=')
-      queries[data[0]] = decodeURIComponent(data[1])
-    })
-  return queries
-})()
-
-var $ele = document.getElementById('url')
-// 서비스명
-$ele.innerText = queries.service
-// 링크 입력
-$ele.href = queries.url
-
-
-function write () {
-  $.ajax({
-    type: 'post',
-    url: 'https://script.google.com/macros/s/AKfycbzGf6aN5oRmIahIo_Pnup5Q95fJ4nA0PUvjikEoPjD-tCa9D_g/exec',
-    data: {key: 2, value: '가나다라'},
-    success: function(response){
-      console.log(response)
-    },
-  })
-}
-
-function read () {
+function fetch () {
   $.ajax({
     type: 'get',
     url: 'https://spreadsheets.google.com/feeds/list/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/1/public/basic?alt=json-in-script',
-    success: function(response){
-      console.log(response)
+    success: function(res){
+      console.log(res)
+      response = res
     },
   })
 }
+function getQuery() {
+  var queries = {}
+    location.search.substr(1)
+      .split('&')
+      .forEach(function (param) {
+        var data = param.split('=')
+        queries[data[0]] = decodeURIComponent(data[1])
+      })
+    return queries
+}
+function setInfo(googleSheet) {
+  var $ele = document.getElementById('url')
+  // 서비스명
+  $ele.innerText = googleSheet[2]
+  // 링크 입력
+  $ele.href = decodeURIComponent(googleSheet[6])
+}
 
+var response
+var queries = getQuery()
+fetch()
 
-
-
+var i = setInterval(function() {
+  if (!response) return
+  if (!queries.key) return setInfo(response[response.length - 1])
+  setInfo(response[response.findIndex(function(googleSheet) {
+    return googleSheet[1] === queries.key
+  })])
+  clearInterval(i)
+}, 200)
 
 </script>
 
