@@ -63,12 +63,12 @@ var queries = getQuery()
 
 var i = setInterval(function() {
   if (!response) return
+  clearInterval(i)
   var googleSheets = response.values
   if (!queries.key) return setInfo(googleSheets[googleSheets.length - 1])
-  setInfo(googleSheets[googleSheets.findIndex(function(googleSheet) {
-    return googleSheet[1] === queries.key
-  })])
-  clearInterval(i)
+  var idx = googleSheets.findIndex(function(googleSheet) { return googleSheet[1] === queries.key })
+  if (idx) setInfo(googleSheets[idx])
+  else setInfo(googleSheets[googleSheets.length - 1])
 }, 200)
 
 </script>
