@@ -60,8 +60,8 @@ public class MegaboxService {
 			updateCache(onePlusOneTickets);
 		}
 
-		log.info("메가박스\t- 호출횟수:{}, 영화관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
-				callCount.incrementAndGet(), allTickets.size(), cache1p1Tickets.size(), isChangedTicket);
+		// log.info("메가박스\t- 호출횟수:{}, 영화관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
+		// 		callCount.incrementAndGet(), allTickets.size(), cache1p1Tickets.size(), isChangedTicket);
 	}
 
 	private boolean isChangedTicket(List<MegaboxTicket> newTickets) {

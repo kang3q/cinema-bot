@@ -79,8 +79,8 @@ public class LotteCinemaService {
             updateCache(onePlusOneTickets);
         }
 
-        log.info("롯데시네마\t- 호출횟수:{}, 영화관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
-                callCount.incrementAndGet(), cacheAllTicketsCount, cache1p1Tickets.size(), isChangedTicket);
+        // log.info("롯데시네마\t- 호출횟수:{}, 영화관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
+        //         callCount.incrementAndGet(), cacheAllTicketsCount, cache1p1Tickets.size(), isChangedTicket);
     }
 
     private boolean isChangedTicket(List<ProductItem> newTickets) {

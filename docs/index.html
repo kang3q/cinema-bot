@@ -67,7 +67,7 @@ var i = setInterval(function() {
   var googleSheets = response.values
   if (!queries.key) return setInfo(googleSheets[googleSheets.length - 1])
   var idx = googleSheets.findIndex(function(googleSheet) { return googleSheet[1] === queries.key })
-  if (idx) setInfo(googleSheets[idx])
+  if (~idx) setInfo(googleSheets[idx])
   else setInfo(googleSheets[googleSheets.length - 1])
 }, 200)
 
