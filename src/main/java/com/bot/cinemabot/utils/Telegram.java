@@ -80,7 +80,6 @@ public class Telegram {
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", channel);
         data.add("text", message);
-        System.out.println(sendMessageUrl);
         String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
         // template.convertAndSend("/topic/greetings", new Greeting(message));
         if (!response.contains("\"ok\":true")) {
@@ -95,7 +94,6 @@ public class Telegram {
         data.add("chat_id", channel);
         data.add("text", message);
         data.add("parse_mode", "html");
-        System.out.println(sendMessageUrl);
         String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
         // template.convertAndSend("/topic/greetings", new Greeting(message));
         if (!response.contains("\"ok\":true")) {
