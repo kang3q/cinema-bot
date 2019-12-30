@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
   <title>영화알림</title>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -20,13 +21,13 @@
           'path': 'https://sheets.googleapis.com/v4/spreadsheets/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/values/시트1',
         })
       }).then(function(response) {
-        console.log(response.result);
+        console.log(response.result)
       }, function(reason) {
-        console.log('Error: ' + reason.result.error.message);
-      });
-    };
+        console.log('Error: ' + reason.result.error.message)
+      })
+    }
     // 1. Load the JavaScript client library.
-    gapi.load('client', start);
+    gapi.load('client', start)
   </script>
 </head>
 
@@ -63,7 +64,7 @@ function write () {
     data: {key: 2, value: '가나다라'},
     success: function(response){
       console.log(response)
-    }
+    },
   })
 }
 
@@ -73,7 +74,7 @@ function read () {
     url: 'https://spreadsheets.google.com/feeds/list/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/1/public/basic?alt=json-in-script',
     success: function(response){
       console.log(response)
-    }
+    },
   })
 }
 

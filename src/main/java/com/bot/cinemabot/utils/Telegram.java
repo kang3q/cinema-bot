@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import com.bot.cinemabot.model.MessageFormat;
+import com.bot.cinemabot.repo.GoogleSpreadSheetsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -21,6 +22,8 @@ public class Telegram {
 
 //    @Autowired
 //    private SimpMessagingTemplate template;
+    @Autowired
+    private GoogleSpreadSheetsRepo googleSpreadSheetsRepo;
 
     @Value("${spring.bot.telegram.token}")
     private String token;
@@ -76,6 +79,7 @@ public class Telegram {
 
     public void sendMessageToChannel(final MessageFormat mf) {
         String message = mf.convertText();
+        googleSpreadSheetsRepo.save(mf);
         log.info(message);
         if (!Boolean.valueOf(TEST)) {
             LinkedMultiValueMap data = new LinkedMultiValueMap();

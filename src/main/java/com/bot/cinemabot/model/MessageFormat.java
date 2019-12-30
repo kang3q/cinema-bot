@@ -1,8 +1,10 @@
 package com.bot.cinemabot.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class MessageFormat {
 
 	private String platform;
