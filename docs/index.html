@@ -26,6 +26,11 @@
     padding: 5px;
     margin-left: 45px;
   }
+  .date {
+    font-size: 0.8rem;
+    text-align: right;
+    margin-top: 10px;
+  }
   .title {
     font-size: 1.2rem;
   }
@@ -95,17 +100,22 @@ function getQuery() {
 }
 function setInfo(googleSheet) {
   var $wrap = document.getElementById('info'),
+      date = googleSheet[1],
       service = googleSheet[2],
       title = googleSheet[3],
       range = googleSheet[4],
       price = googleSheet[5],
-      url = decodeURIComponent(googleSheet[6])
+      url = decodeURIComponent(googleSheet[6]),
+      formattedDate = date.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/g, function($0,$1,$2,$3,$4,$5,$6) {
+         return '{0:YYYY}.{1:MM}.{2:DD} {3:HH}:{4:mm}:{5:ss}'.format($1,$2,$3,$4,$5,$6)
+       })
   $wrap.innerHTML = [
       '<p class="service">{0:service}</p>'.format(service),
       '<h2 class="title">{0:title}</h2>'.format(title),
       '<p class="range">{0:range}</p>'.format(range),
       price ? '<p class="price">금액: {0:price}</p>'.format(price) : '',
       '<a class="ellipsis" href="{0:url}" target="_blank">{0:url}</a>'.format(url),
+      '<p class="date">{0:date}</p>'.format(formattedDate),
     ].join('')
 }
 
