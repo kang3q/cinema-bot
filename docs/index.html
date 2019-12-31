@@ -3,7 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+  <link rel="favicon" href="favicon.ico">
   <title>영화알림</title>
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+  h2, p {
+    margin: 1px;
+  }
+  .container {
+    min-width: 300px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .logo {
+    float: left;
+    width: 36px;
+    border-radius: 18px;
+  }
+  #info {
+    padding: 5px;
+    margin-left: 45px;
+  }
+  .title {
+    font-size: 1.2rem;
+  }
+  .range {
+    font-size: 0.8rem;
+  }
+  .ellipsis {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  </style>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script src="https://apis.google.com/js/api.js"></script>
@@ -13,17 +48,12 @@
       // 2. Initialize the JavaScript client library.
       gapi.client.init({
         'apiKey': 'AIzaSyCTNqqcP0PcpbyNkyvUxgrtRvnqXqB7U4U',
-        // clientId and scope are optional if auth is not required.
-        //'clientId': '601826383195-jshjvb343kq9m4d7im9mqgqiu78b75ad.apps.googleusercontent.com',
-        //'scope': 'profile',
       }).then(function() {
-        // 3. Initialize and make the API request.
         return gapi.client.request({
           'path': 'https://sheets.googleapis.com/v4/spreadsheets/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/values/시트1',
         })
       }).then(function(res) {
-      	response = res.result
-        console.log(res.result)
+        console.log(response = res.result)
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message)
       })
@@ -34,13 +64,25 @@
 </head>
 
 <body>
-<h1>영화알림 채널에 오신것을 환영합니다.</h1>
-<p>롯데시네마, CGV, 메가박스의 1+1 알림을 제공받으세요.</p>
-텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
-<br>
-<br>
-구매링크: <a id="url" href="#">잠시만 기다려주세요.</a>
+<div class="container">
+  <h1>영화알림 채널에 오신것을 환영합니다.</h1>
+  <p>
+  해당 채널을 구독하고<br>
+  롯데시네마, CGV, 메가박스의 1+1 알림을 제공받으세요.
+  </p>
+  텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
+  <br>
+  <br>
+  <img class="logo" src="/logo.jpeg" alt="">
+  <div id="info">잠시만 기다려주세요.</div>
+</div>
 <script>
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)(:[\wㄱ-힣]+)?}/g, function(match, number) {
+    return typeof args[ number ] !== undefined ? args[ number ] : match;
+  });
+};
 function getQuery() {
   var queries = {}
     location.search.substr(1)
@@ -52,11 +94,19 @@ function getQuery() {
     return queries
 }
 function setInfo(googleSheet) {
-  var $ele = document.getElementById('url')
-  // 서비스명
-  $ele.innerText = googleSheet[2]
-  // 링크 입력
-  $ele.href = decodeURIComponent(googleSheet[6])
+  var $wrap = document.getElementById('info'),
+      service = googleSheet[2],
+      title = googleSheet[3],
+      range = googleSheet[4],
+      price = googleSheet[5],
+      url = decodeURIComponent(googleSheet[6])
+  $wrap.innerHTML = [
+      '<p class="service">{0:service}</p>'.format(service),
+      '<h2 class="title">{0:title}</h2>'.format(title),
+      '<p class="range">{0:range}</p>'.format(range),
+      price ? '<p class="price">금액: {0:price}</p>'.format(price) : '',
+      '<a class="ellipsis" href="{0:url}" target="_blank">{0:url}</a>'.format(url),
+    ].join('')
 }
 
 var queries = getQuery()

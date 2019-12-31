@@ -1,0 +1,6 @@
+{
+  "description": "개발환경 조성. npm run web 실행하면 docs 웹서버 실행됨.",
+  "scripts": {
+    "web": "npx http-server ./docs -p 3000 -g -o --proxy http://127.0.0.1:3000?"
+  }
+}
