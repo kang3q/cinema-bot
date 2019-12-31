@@ -17,14 +17,31 @@
     max-width: 500px;
     margin: 0 auto;
   }
+  .chats {
+    position:relative;
+  }
   .logo {
     float: left;
     width: 36px;
     border-radius: 18px;
   }
+  .bubble_icon {
+     display: inline-block;
+     width: 10px;
+     height: 10px;
+     background-color: white;
+     position: absolute;
+     top: 10px;
+     left: 40px;
+     border-left: 1px solid #d7e3ec;
+     border-bottom: 1px solid #d7e3ec;
+     transform: rotate(45deg);
+  }
   #info {
     padding: 5px;
     margin-left: 45px;
+    border: 1px solid #d7e3ec;
+    border-radius: 0 10px 10px 10px;
   }
   .date {
     font-size: 0.8rem;
@@ -70,16 +87,21 @@
 
 <body>
 <div class="container">
-  <h1>영화알림 채널에 오신것을 환영합니다.</h1>
-  <p>
-  해당 채널을 구독하고<br>
-  롯데시네마, CGV, 메가박스의 1+1 알림을 제공받으세요.
-  </p>
-  텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
+  <div class="desc">
+    <h1>영화알림 채널에 오신것을 환영합니다.</h1>
+    <p>
+    해당 채널을 구독하고<br>
+    롯데시네마, CGV, 메가박스의 1+1 알림을 제공받으세요.
+    </p>
+    텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
+  </div>
   <br>
   <br>
-  <img class="logo" src="/logo.jpeg" alt="">
-  <div id="info">잠시만 기다려주세요.</div>
+  <div class="chats">
+    <img class="logo" src="/logo.jpeg" alt="">
+    <span class="bubble_icon"></span>
+    <div id="info">잠시만 기다려주세요.</div>
+  </div>
 </div>
 <script>
 String.prototype.format = function() {
