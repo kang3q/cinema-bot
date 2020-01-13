@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+  <title>video</title>
+</head>
+<body style="text-align: center;">
+<video id="video" controls width="90%"/>
+<script>
+  function getQuery() {
+    var queries = {}
+      location.search.substr(1)
+        .split('&')
+        .forEach(function (param) {
+          var data = param.split('=')
+          queries[data[0]] = decodeURIComponent(data[1])
+        })
+      return queries
+  }
+  queries = getQuery()
+  document.getElementById('video').src = queries.video
+</script>
+</body>
+</html>
