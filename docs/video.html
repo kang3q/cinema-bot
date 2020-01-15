@@ -4,8 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
   <title>video</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155230507-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-155230507-1');
+  </script>
 </head>
 <body style="text-align: center;">
+<h1 id="title"></h1>
 <video id="video" controls width="90%"/>
 <script>
   function getQuery() {
@@ -19,6 +28,7 @@
       return queries
   }
   queries = getQuery()
+  document.getElementById('title').innerText = queries.title
   document.getElementById('video').src = queries.video
 </script>
 </body>
