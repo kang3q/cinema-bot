@@ -14,6 +14,7 @@ public class MessageFormat {
 	private String exist1p1;
 	private String existTicket;
 	private String buyUrl;
+	private boolean disableWebPagePreview;
 
 	public String convertText() {
 		return String.format(getTextTemplate(), this.platform, this.title, this.dateRange, this.price, this.exist1p1, this.existTicket, this.buyUrl);

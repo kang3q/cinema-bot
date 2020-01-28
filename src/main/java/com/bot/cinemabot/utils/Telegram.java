@@ -74,12 +74,13 @@ public class Telegram {
     }
 
     public void sendMessageToChannel(final MessageFormat mf) {
-        String message = mf.convertText();
         googleSpreadSheetsRepo.save(mf);
+        String message = mf.convertText();
         log.info(message);
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", channel);
         data.add("text", message);
+        data.add("disable_web_page_preview", mf.isDisableWebPagePreview());
         String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
         // template.convertAndSend("/topic/greetings", new Greeting(message));
         if (!response.contains("\"ok\":true")) {
@@ -88,12 +89,14 @@ public class Telegram {
     }
 
     public void sendHTMLToChannel(final MessageFormat mf) {
+        googleSpreadSheetsRepo.save(mf);
         String message = mf.convertHTML();
         log.info(message);
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", channel);
         data.add("text", message);
         data.add("parse_mode", "html");
+        data.add("disable_web_page_preview", mf.isDisableWebPagePreview());
         String response = Utils.restTemplate.postForObject(sendMessageUrl, data, String.class);
         // template.convertAndSend("/topic/greetings", new Greeting(message));
         if (!response.contains("\"ok\":true")) {

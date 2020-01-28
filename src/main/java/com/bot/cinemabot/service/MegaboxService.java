@@ -54,7 +54,7 @@ public class MegaboxService {
 			MegaboxTicket new1p1Tickets = getNew1p1Ticket(onePlusOneTickets);
 			if (!StringUtils.isEmpty(new1p1Tickets.getName())) {
 				MegaboxTicket newTickets = getDetailInfo(new1p1Tickets.getItemCode());
-				MessageFormat format = new MessageFormat("메가박스", newTickets.getName(), newTickets.getDate(), newTickets.getPrice(), String.valueOf(onePlusOneTickets.size()), String.valueOf(allTickets.size()), newTickets.getLink());
+				MessageFormat format = new MessageFormat("메가박스", newTickets.getName(), newTickets.getDate(), newTickets.getPrice(), String.valueOf(onePlusOneTickets.size()), String.valueOf(allTickets.size()), newTickets.getLink(), true);
 				telegram.sendMessageToChannel(format);
 			}
 			updateCache(onePlusOneTickets);

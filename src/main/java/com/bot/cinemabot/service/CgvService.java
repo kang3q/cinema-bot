@@ -54,7 +54,7 @@ public class CgvService {
             CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
             String buyLink = cgv + newTicket.getLink().substring(1);
             String period = getPeriod(buyLink);
-            MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink);
+            MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink, true);
             telegram.sendMessageToChannel(format);
             c = 1;
             cache1p1Tickets.clear();
