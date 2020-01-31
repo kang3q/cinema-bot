@@ -34,8 +34,8 @@
   }
   #chats {
     margin-top: 30px;
-    /*margin-bottom: 150px;*/
-    height: calc(97vh - (160px + 30px /*+ 150px*/ + 50px));
+    /*margin-bottom: 140px;*/
+    /*height: calc(97vh - (160px + 250px));*/
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
   }
@@ -85,17 +85,17 @@
   }
   .ad {
     width: 100%;
-    height: 140px;
+    height: 130px;
     position: fixed;
     left: 0;
+    right: 0;
     bottom: 0;
     background-color: #80808080;
     text-align: center;
-    padding-top: 60px;
   }
   </style>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!--<script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <script src="https://apis.google.com/js/api.js"></script>
   <script>
     var response
@@ -129,13 +129,10 @@
 <body>
 <div class="container">
   <div class="desc">
-    <h1>
-      영화알림 채널에<br>
-      오신것을 환영합니다.
-    </h1>
+    <h1>영화알림 채널</h1>
     <p>
-    해당 채널을 구독하고<br>
-    롯데시네마, CGV, 메가박스의 1+1 알림을 제공받으세요.
+    환영합니다. 해당 채널을 구독하고<br>
+    <strong>롯데시네마, CGV, 메가박스</strong>의 1+1 알림을 제공받으세요.
     </p>
     텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
   </div>
@@ -148,11 +145,10 @@
       </div>
     </li>
   </ul>
-  <!--<div class="ad">AD</div>-->
-  <script src="https://ads-partners.coupang.com/g.js"></script>
-  <script>
-  	new PartnersCoupang.G({ id:124899 });
-  </script>
+  <div class="ad">
+    <script src="https://ads-partners.coupang.com/g.js"></script>
+    <script>new PartnersCoupang.G({ id:124899 });</script>
+  </div>
 </div>
 <script>
 String.prototype.format = function() {
@@ -219,7 +215,7 @@ var i = setInterval(function() {
   if (!response) return
   clearInterval(i)
   var googleSheets = response.values
-  if (!queries.key) return setChats(googleSheets.slice(Math.max(googleSheets.length - 10, 1)))
+  if (!queries.key) return setChats(googleSheets.slice(Math.max(googleSheets.length - 1, 1)))
   var idx = googleSheets.findIndex(function(googleSheet) { return googleSheet[1] === queries.key })
   if (~idx) setChat(googleSheets[idx])
   else setChats(googleSheets.slice(Math.max(googleSheets.length - 5, 1)))
