@@ -2,6 +2,7 @@ package com.bot.cinemabot.model.megabox;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ public class MegaboxResponse {
 	private List<TicketItem> list;
 
 	public List<MegaboxTicket> convertTickets(final String detailUrl) {
+		if (this.list == null) return new ArrayList<>();
 		return this.list.stream()
 				.map(item -> new MegaboxTicket(item.getItemDetailName(), item.getDisplayPrice_txt(), "", detailUrl + item.getItemCode(), item.getItemCode(), item.getRemain_cnt() == 0))
 				.collect(Collectors.toList());
