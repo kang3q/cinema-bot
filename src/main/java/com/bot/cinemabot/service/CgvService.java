@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import com.bot.cinemabot.model.MessageFormat;
+import com.bot.cinemabot.utils.Utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -54,7 +55,7 @@ public class CgvService {
             CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
             String buyLink = cgv + newTicket.getLink().substring(1);
             String period = getPeriod(buyLink);
-            MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink, true);
+            MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink, true, Utils.generateKey());
             telegram.sendMessageToChannel(format);
             c = 1;
             cache1p1Tickets.clear();

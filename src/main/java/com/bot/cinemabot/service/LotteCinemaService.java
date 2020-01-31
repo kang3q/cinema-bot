@@ -73,7 +73,7 @@ public class LotteCinemaService {
                          "https://www.lottecinema.co.kr/NLCMW/CinemaMall/Detail?ItemId=%s&ClassificationCode=%s&MenuId=%s",
                         movieItemDetail.getDisplayItemID(), movieItemDetail.getDisplayLargeClassificationCode(), movieItemDetail.getMenuId()
                 );
-                MessageFormat format = new MessageFormat("롯데시네마", movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), String.valueOf(movieItemDetail.getDiscountSellPrice()), String.valueOf(onePlusOneTickets.size()), String.valueOf(cacheAllTicketsCount), buyLink, true);
+                MessageFormat format = new MessageFormat("롯데시네마", movieItemDetail.getDisplayItemName(), movieItemDetail.getUseRestrictionsDayName(), String.valueOf(movieItemDetail.getDiscountSellPrice()), String.valueOf(onePlusOneTickets.size()), String.valueOf(cacheAllTicketsCount), buyLink, true, Utils.generateKey());
                 telegram.sendMessageToChannel(format);
             }
             updateCache(onePlusOneTickets);

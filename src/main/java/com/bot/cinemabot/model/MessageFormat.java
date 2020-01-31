@@ -15,9 +15,14 @@ public class MessageFormat {
 	private String existTicket;
 	private String buyUrl;
 	private boolean disableWebPagePreview;
+	private String key;
 
 	public String convertText() {
 		return String.format(getTextTemplate(), this.platform, this.title, this.dateRange, this.price, this.exist1p1, this.existTicket, this.buyUrl);
+	}
+
+	public String convertText4AD() {
+		return String.format("%s\nhttps://cinemabot.duckdns.org/?key=%s", this.title, this.key);
 	}
 
 	public String convertHTML() {

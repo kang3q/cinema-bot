@@ -9,20 +9,17 @@ import org.springframework.util.LinkedMultiValueMap;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Slf4j
 @Repository
 public class GoogleSpreadSheetsRepo {
 	private String url = "https://script.google.com/macros/s/AKfycbzGf6aN5oRmIahIo_Pnup5Q95fJ4nA0PUvjikEoPjD-tCa9D_g/exec";
-	private SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 
 	@Async
 	public void save(final MessageFormat mf) {
 		try {
 			LinkedMultiValueMap data = new LinkedMultiValueMap();
-			data.add("key", df.format(new Date()));
+			data.add("key", mf.getKey());
 			data.add("platform", mf.getPlatform());
 			data.add("title", mf.getTitle());
 			data.add("dateRange", mf.getDateRange());
