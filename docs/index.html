@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
   <link rel="favicon" href="favicon.ico">
-  <title>영화알림</title>
+  <title>영화1+1알림</title>
   <style>
   * {
     box-sizing: border-box;
@@ -29,15 +29,25 @@
     margin: 0 auto;
     padding: 10px 0;
   }
-  .desc {
-    height: 160px;
+  .header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    text-align: center;
+    background-color: white;
+    z-index: 1;
+  }
+  .header .inner {
+    margin: 0 auto;
+    padding: 0 5px 5px;
+    min-width: 300px;
+    max-width: 500px;
+    text-align: left;
   }
   #chats {
-    margin-top: 30px;
-    /*margin-bottom: 140px;*/
-    /*height: calc(97vh - (160px + 250px));*/
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
+    margin-top: 150px;
+    margin-bottom: 140px;
   }
   .chat {
     position:relative;
@@ -128,13 +138,15 @@
 
 <body>
 <div class="container">
-  <div class="desc">
-    <h1>영화알림 채널</h1>
-    <p>
-    환영합니다. 해당 채널을 구독하고<br>
-    <strong>롯데시네마, CGV, 메가박스</strong>의 1+1 알림을 제공받으세요.
-    </p>
-    텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
+  <div class="header">
+    <div class="inner">
+      <h1>영화 1+1 알림 채널</h1>
+      <p>
+        환영합니다. 해당 채널을 구독하고<br>
+        <strong>롯데시네마, CGV, 메가박스</strong>의 1+1 알림을 제공받으세요.
+      </p>
+      텔레그램 채널: <a href="https://t.me/cinema1p1">https://t.me/cinema1p1</a>
+    </div>
   </div>
   <ul id="chats">
     <li class="chat">
@@ -167,13 +179,17 @@ function getQuery() {
       })
     return queries
 }
+function getHtml() {
+  if (!window.$html) window.$html = document.getElementsByTagName('html')[0]
+  return window.$html
+}
 function getWrapper() {
   if (!window.$chats) window.$chats = document.getElementById('chats')
   return window.$chats
 }
 function setChat(googleSheet) {
   getWrapper().innerHTML = makeChatHtml(googleSheet)
-  getWrapper().scrollTo(0, 100000)
+  getHtml().scrollTo(0, 100000)
 }
 function setChats(googleSheets) {
   getWrapper().innerHTML = googleSheets
@@ -181,7 +197,7 @@ function setChats(googleSheets) {
       return makeChatHtml(googleSheet)
     })
     .join('')
-  getWrapper().scrollTo(0, 100000)
+  getHtml().scrollTo(0, 100000)
 }
 function makeChatHtml(googleSheet) {
   var date = googleSheet[1],
@@ -194,7 +210,7 @@ function makeChatHtml(googleSheet) {
         return '{0:YYYY}.{1:MM}.{2:DD} {3:HH}:{4:mm}:{5:ss}'.format($1,$2,$3,$4,$5,$6)
       })
   return [
-    '<li class="chat">',
+    '<li id="{0:id}" class="chat">'.format(date),
       '<img class="logo" src="/logo.jpeg" alt="">',
       '<span class="bubble_icon"></span>',
       '<div class="info">',
@@ -215,10 +231,10 @@ var i = setInterval(function() {
   if (!response) return
   clearInterval(i)
   var googleSheets = response.values
-  if (!queries.key) return setChats(googleSheets.slice(Math.max(googleSheets.length - 1, 1)))
+  if (!queries.key) return setChats(googleSheets.slice(Math.max(googleSheets.length - 40, 1)))
   var idx = googleSheets.findIndex(function(googleSheet) { return googleSheet[1] === queries.key })
   if (~idx) setChat(googleSheets[idx])
-  else setChats(googleSheets.slice(Math.max(googleSheets.length - 5, 1)))
+  else setChats(googleSheets.slice(Math.max(googleSheets.length - 10, 1)))
 }, 200)
 
 </script>
