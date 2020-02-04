@@ -114,20 +114,22 @@
   <!--<script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <script src="https://apis.google.com/js/api.js"></script>
   <script>
-    var response
-    function start() {
-      // 2. Initialize the JavaScript client library.
-      gapi.client.init({
-        'apiKey': 'AIzaSyCTNqqcP0PcpbyNkyvUxgrtRvnqXqB7U4U',
-      }).then(function() {
-        return gapi.client.request({
-          'path': 'https://sheets.googleapis.com/v4/spreadsheets/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/values/시트1',
-        })
+    var sheets
+    function gFetch(sheetQuery) {
+      if (!sheetQuery) sheetQuery = '시트1!A2:G40'
+      return gapi.client.request({
+        path: 'https://sheets.googleapis.com/v4/spreadsheets/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/values/'+sheetQuery,
       }).then(function(res) {
-        console.log(response = res.result)
+        return sheets = res.result.values.reverse()
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message)
       })
+    }
+    function start() {
+      // 2. Initialize the JavaScript client library.
+      gapi.client
+      	.init({ apiKey: 'AIzaSyCTNqqcP0PcpbyNkyvUxgrtRvnqXqB7U4U' })
+        .then(gFetch)
     }
     // 1. Load the JavaScript client library.
     gapi.load('client', start)
@@ -209,8 +211,8 @@ function makeChatHtml(googleSheet) {
   var date = googleSheet[1],
       service = googleSheet[2],
       title = googleSheet[3],
-      range = googleSheet[4],
-      price = googleSheet[5],
+      range = (googleSheet[4].match(/(\d+){4}(?:[-.]|\s)*(\d+){2}(?:[-.]|\s)*(\d+){2}/g)||[]).join(' ~ ').replace(/-/g, '.'),
+      price = googleSheet[5].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
       url = decodeURIComponent(googleSheet[6]),
       formattedDate = date.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/g, function($0,$1,$2,$3,$4,$5,$6) {
         return '{0:YYYY}.{1:MM}.{2:DD} {3:HH}:{4:mm}:{5:ss}'.format($1,$2,$3,$4,$5,$6)
@@ -234,13 +236,17 @@ function makeChatHtml(googleSheet) {
 var queries = getQuery()
 
 var i = setInterval(function() {
-  if (!response) return
+  if (!sheets) return
   clearInterval(i)
-  var googleSheets = response.values
-  if (!queries.key) return setChats(googleSheets.slice(Math.max(googleSheets.length - 40, 1)))
-  var idx = googleSheets.findIndex(function(googleSheet) { return googleSheet[1] === queries.key })
-  if (~idx) setChat(googleSheets[idx])
-  else setChats(googleSheets.slice(Math.max(googleSheets.length - 10, 1)))
+  if (!queries.key) return setChats(sheets)
+  var findFnc = function(sheet) { return sheet[1] === queries.key }
+  var idx = sheets.findIndex(findFnc)
+  if (~idx) setChat(sheets[idx])
+  else gFetch('시트1!A2:G').then(function() {
+      var idx = sheets.findIndex(findFnc)
+      if (~idx) setChat(sheets[idx])
+      else setChats(sheets)
+    })
 }, 200)
 
 </script>

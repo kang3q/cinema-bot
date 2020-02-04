@@ -75,8 +75,7 @@ public class Telegram {
 
     public void sendMessageToChannel(final MessageFormat mf) {
         googleSpreadSheetsRepo.save(mf);
-        // String message = mf.convertText4AD();
-        String message = mf.convertText();
+         String message = mf.convertText4AD();
         log.info(message);
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", channel);
