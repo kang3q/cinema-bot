@@ -51,8 +51,8 @@ spring:
       cgv:
         api: http://www.cgv.co.kr/culture-event/event
       megabox:
-        api: https://m.megabox.co.kr/DataProvider
-        detailUrl: https://m.megabox.co.kr/?menuId=store_detail&itemCode=
+        api: https://m.megabox.co.kr/on/oh/ohd/StoreMain/storePrdtPageList.do
+        detailUrl: https://m.megabox.co.kr/store/detail?cmbndKindNo=
     shopping:
       ppomppu:
         url: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu
