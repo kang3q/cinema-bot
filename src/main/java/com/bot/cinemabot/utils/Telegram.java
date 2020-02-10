@@ -49,7 +49,7 @@ public class Telegram {
 
     public void sendMessageToBot(String message, Object... obj) {
         message = String.format(message, obj);
-        log.info(message);
+        log.info("\n" + message);
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", chatId);
         data.add("text", message);
@@ -62,7 +62,7 @@ public class Telegram {
 
     public void sendMessageToChannel(String message, Object... obj) {
         message = String.format(message, obj);
-        log.info(message);
+        log.info("\n" + message);
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", channel);
         data.add("text", message);
@@ -75,8 +75,8 @@ public class Telegram {
 
     public void sendMessageToChannel(final MessageFormat mf) {
         googleSpreadSheetsRepo.save(mf);
-         String message = mf.convertText4AD();
-        log.info(message);
+        String message = mf.convertText4AD();
+        log.info("\n" + message);
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", channel);
         data.add("text", message);
@@ -91,7 +91,7 @@ public class Telegram {
     public void sendHTMLToChannel(final MessageFormat mf) {
         googleSpreadSheetsRepo.save(mf);
         String message = mf.convertHTML();
-        log.info(message);
+        log.info("\n" + message);
         LinkedMultiValueMap data = new LinkedMultiValueMap();
         data.add("chat_id", channel);
         data.add("text", message);

@@ -85,11 +85,10 @@ public class MegaboxService {
 
 	private List<MegaboxTicket> getMegaboxTickets() {
 		LinkedMultiValueMap data = new LinkedMultiValueMap();
-		data.add("_command", "Store.getList");
-		data.add("siteCode", "43");
-		data.add("majorCode", "03");
-		data.add("minorCode", "00");
-		data.add("size", "small");
+		data.add("cateCd", "CPC03");
+		data.add("pageIndex", "1");
+		data.add("pageCount", 10);
+		data.add("type", "NEW");
 		String response = Utils.restTemplate.postForObject(megabox, data, String.class);
 		MegaboxResponse res = Utils.gson.fromJson(response, MegaboxResponse.class);
 		return res.convertTickets(detailUrl);
