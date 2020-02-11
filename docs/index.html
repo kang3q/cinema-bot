@@ -99,6 +99,25 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .button-box {
+    position: fixed;
+    bottom: 130px;
+    width: 100%;
+    text-align: right;
+  }
+  .button-box button {
+    display: inline-block;
+    position: absolute;
+    right: 17px;
+    bottom: 10px;
+    padding: 10px;
+    border: 2px solid #36a7ff;
+    border-radius: 6px;
+    background-color: #86e0f9;
+  }
+  .button-box button.hide {
+    display: none;
+  }
   .ad {
     width: 100%;
     height: 130px;
@@ -120,6 +139,7 @@
       return gapi.client.request({
         path: 'https://sheets.googleapis.com/v4/spreadsheets/1PXoXNt12WjW-2nyYh1lzZu35Vm9lucagRon9N9dJKJU/values/'+sheetQuery,
       }).then(function(res) {
+        if (sheets) return sheets = res.result.values.reverse().concat(sheets)
         return sheets = res.result.values.reverse()
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message)
@@ -165,6 +185,9 @@
       </div>
     </li>
   </ul>
+  <div class="button-box">
+    <button id="moreBtn" class="hide" onclick="onMore(this)">더보기</button>
+  </div>
   <div class="ad">
     <script src="https://ads-partners.coupang.com/g.js"></script>
     <script>new PartnersCoupang.G({ id:124899, width: '100%' });</script>
@@ -197,7 +220,7 @@ function getWrapper() {
 }
 function setChat(googleSheet) {
   getWrapper().innerHTML = makeChatHtml(googleSheet)
-  getHtml().scrollTo(0, 100000)
+  showMore()
 }
 function setChats(googleSheets) {
   getWrapper().innerHTML = googleSheets
@@ -232,6 +255,13 @@ function makeChatHtml(googleSheet) {
     '</li>',
     ].join('')
 }
+function showMore() {
+  document.getElementById('moreBtn').classList.remove('hide')
+}
+function onMore(ele) {
+  setChats(sheets)
+  ele.classList.add('hide')
+}
 
 var queries = getQuery()
 
@@ -242,10 +272,10 @@ var i = setInterval(function() {
   var findFnc = function(sheet) { return sheet[1] === queries.key }
   var idx = sheets.findIndex(findFnc)
   if (~idx) setChat(sheets[idx])
-  else gFetch('시트1!A2:G').then(function() {
-      var idx = sheets.findIndex(findFnc)
-      if (~idx) setChat(sheets[idx])
-      else setChats(sheets)
+  else gFetch('시트1!A41:G').then(function() {
+    var idx = sheets.findIndex(findFnc)
+    if (~idx) setChat(sheets[idx])
+    else setChats(sheets)
     })
 }, 200)
 
