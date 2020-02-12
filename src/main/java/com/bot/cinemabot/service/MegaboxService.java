@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,6 +38,7 @@ public class MegaboxService {
 
 	private List<MegaboxTicket> cache1p1Tickets;
 	final private AtomicInteger callCount = new AtomicInteger(0);
+	final Pattern periodPattern = Pattern.compile("\\d{4}.(?!\\d)*\\d{2}.(?!\\d)*\\d{2}(?:~|\\s)*\\d{4}.(?!\\d)*\\d{2}.(?!\\d)*\\d{2}"); // 2020.02.11 ~ 2020.03.02
 
 	@PostConstruct
 	private void init() {
@@ -95,10 +98,15 @@ public class MegaboxService {
 	}
 
 	private MegaboxTicket getDetailInfo(@PathVariable String itemCode) throws IOException {
-		Document megaboxDocument = Jsoup.connect(detailUrl + itemCode).get();
-		String date = megaboxDocument.select("#content .good_info .date time").text();
-		String price = megaboxDocument.select("#content #displayPrice").val();
-		String name = megaboxDocument.select("#form_pay input[name=itemName]").val();
+		Document megaboxDocument = Jsoup
+				.connect("https://m.megabox.co.kr/on/oh/ohd/StoreDtl/selectStoreDtl.do")
+				.data("cmbndKindNo", itemCode)
+				.post();
+		String name = megaboxDocument.select(".prod-info .tit").text().trim();
+		String price = megaboxDocument.select(".prod-info .price .roboto").text().trim();
+		String rawDate = megaboxDocument.select(".prod-info-detail > span").text();
+		Matcher matcher = periodPattern.matcher(rawDate);
+		String date = matcher.find() ? matcher.group() : "";
 		return new MegaboxTicket(name, price, date, detailUrl + itemCode, itemCode, false);
 	}
 
