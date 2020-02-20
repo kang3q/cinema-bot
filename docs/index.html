@@ -163,7 +163,11 @@
     gtag('js', new Date());
     gtag('config', 'UA-155230507-1');
     window.addEventListener('error', function(e) {
-      ga('send', 'event', 'javascript-error', JSON.stringify(e.error), window.location.href)
+      gtag('event', 'javascript-error', {
+        'event_category': 'error-logging',
+        'event_label': JSON.stringify(e.error),
+        'value': window.location.href,
+      })
     })
   </script>
 </head>
