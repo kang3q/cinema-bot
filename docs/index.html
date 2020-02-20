@@ -130,7 +130,22 @@
     text-align: center;
   }
   </style>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155230507-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-155230507-1');
+    window.addEventListener('error', function(e) {
+  	gtag('event', 'javascript-error', {
+  	    'event_category': 'error-logging',
+  	    'event_label': JSON.stringify(e.error),
+  	    'value': window.location.href,
+  	  })
+    })
+  </script>
+  <!--<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>-->
   <!--<script data-ad-client="ca-pub-8598336719433043" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <script src="https://apis.google.com/js/api.js"></script>
   <script>
@@ -154,21 +169,6 @@
     }
     // 1. Load the JavaScript client library.
     gapi.load('client', start)
-  </script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155230507-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-155230507-1');
-    window.addEventListener('error', function(e) {
-      gtag('event', 'javascript-error', {
-        'event_category': 'error-logging',
-        'event_label': JSON.stringify(e.error),
-        'value': window.location.href,
-      })
-    })
   </script>
 </head>
 
