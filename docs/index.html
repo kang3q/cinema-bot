@@ -138,8 +138,8 @@
     gtag('js', new Date());
     gtag('config', 'UA-155230507-1');
     window.addEventListener('error', function(e) {
-  	gtag('event', 'javascript-error', {
-  	    'event_category': 'error-logging',
+  	  gtag('event', 'error-logging', {
+  	    'event_category': 'js-error',
   	    'event_label': JSON.stringify(e.error),
   	    'value': window.location.href,
   	  })
@@ -159,6 +159,11 @@
         return sheets = res.result.values.reverse()
       }, function(reason) {
         console.log('Error: ' + reason.result.error.message)
+        gtag('event', 'javascript-error', {
+          'event_category': 'api-error',
+          'event_label': JSON.stringify(reason.result.error),
+          'value': window.location.href,
+        })
       })
     }
     function start() {
