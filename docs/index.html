@@ -140,7 +140,7 @@
     window.addEventListener('error', function(e) {
   	  gtag('event', 'error-logging', {
   	    'event_category': 'js-error',
-  	    'event_label': JSON.stringify(e.error),
+  	    'event_label': e.error.message,
   	    'value': window.location.href,
   	  })
     })
