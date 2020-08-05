@@ -9,6 +9,9 @@ spring:
 ---
 spring:
   profiles: local
+  devtools:
+    livereload:
+      enabled: true
   bot:
     telegram:
       apiDomain: https://api.telegram.org
