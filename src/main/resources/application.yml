@@ -22,7 +22,7 @@ spring:
       lotte:
         api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
       cgv:
-        api: http://www.cgv.co.kr/culture-event/event
+        api: http://www.cgv.co.kr/culture-event/event/defaultNew.aspx?mCode=004
       megabox:
         api: https://m.megabox.co.kr/on/oh/ohd/StoreMain/selectStoreMainList.do
         detailUrl: https://m.megabox.co.kr/store/detail?cmbndKindNo=
