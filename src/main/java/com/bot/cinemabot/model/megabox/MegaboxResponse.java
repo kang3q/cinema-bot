@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 @Data
 public class MegaboxResponse {
-	private List<TicketItem> storePrdtPageList;
+	private List<TicketItem> storePrdtList;
 
 	public List<MegaboxTicket> convertTickets(final String detailUrl) {
-		return this.storePrdtPageList.stream()
+		return this.storePrdtList.stream()
 				.map(item -> new MegaboxTicket(item.getPrdtNm(), String.valueOf(item.getPrdtNormAmt()), "", detailUrl + item.getCmbndKindNo(), item.getCmbndKindNo(), "Y".equals(item.getSoldoutAt()) || item.getPrdtRmainQty() == 0))
 				.collect(Collectors.toList());
 	}
@@ -24,6 +24,7 @@ class TicketItem {
 	private String prdtNm;         // "[정직한 후보] 앵콜! 1+1 관람권",
 	private String prdtCompsDesc;  // "[정직한 후보] 앵콜! 1+1 관람권",
 	private int prdtImgNo;         // 1011308,
+	private String prdtImgRplDesc; // "설명",
 	private String prdtBadgeCd;    // "CPB02",
 	private int prdtNormAmt;       // 9000,
 	private int prdtExpoAmt;       // 9000,
@@ -31,5 +32,4 @@ class TicketItem {
 	private int prdtTotSellLmtQty; // 2000,
 	private int prdtRmainQty;      // 1862,
 	private String soldoutAt;      // "N"
-
 }

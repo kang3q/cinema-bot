@@ -24,7 +24,7 @@ spring:
       cgv:
         api: http://www.cgv.co.kr/culture-event/event
       megabox:
-        api: https://m.megabox.co.kr/on/oh/ohd/StoreMain/storePrdtPageList.do
+        api: https://m.megabox.co.kr/on/oh/ohd/StoreMain/selectStoreMainList.do
         detailUrl: https://m.megabox.co.kr/store/detail?cmbndKindNo=
     shopping:
       ppomppu:
