@@ -1,5 +1,8 @@
 package com.bot.cinemabot.utils;
 
+import com.bot.cinemabot.service.CgvService;
+import com.bot.cinemabot.service.LotteCinemaService;
+import com.bot.cinemabot.service.MegaboxService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import com.bot.cinemabot.model.socket.Greeting;
 
+import java.io.IOException;
+
 /**
  * Created by 1004w455 on 2018. 4. 16..
  */
@@ -23,6 +28,15 @@ public class PingPong extends TelegramLongPollingBot {
 
 //    @Autowired
 //    private SimpMessagingTemplate template;
+
+    @Autowired
+    private CgvService cgvService;
+
+    @Autowired
+    private LotteCinemaService lotteCinemaService;
+
+    @Autowired
+    private MegaboxService megaboxService;
 
     @Value("${spring.bot.telegram.token}")
     private String token;
@@ -48,14 +62,27 @@ public class PingPong extends TelegramLongPollingBot {
             Long chatId = message.getChatId();
             response.setChatId(chatId);
             String text = message.getText();
-            response.setText(text);
-            try {
-                execute(response);
-//                template.convertAndSend("/topic/greetings", new Greeting(text));
-                log.info("Sent message \"{}\" to {}", text, chatId);
-            } catch (TelegramApiException e) {
-                log.error("Failed to send message \"{}\" to {} due to error: {}", text, chatId, e.getMessage());
+
+            if ("영화".equals(text)) {
+                try {
+                    response.setText(String.format("%s\n\n%s\n\n%s", cgvService.checkStatus(), lotteCinemaService.checkStatus(), megaboxService.checkStatus()));
+                } catch (IOException e) {
+                    response.setText(e.getMessage());
+                }
+            } else {
+                response.setText(text);
             }
+            executeSend(response, chatId, text);
+        }
+    }
+
+    private void executeSend(SendMessage response, Long chatId, String text) {
+        try {
+            execute(response);
+            // template.convertAndSend("/topic/greetings", new Greeting(text));
+            log.info("Sent message \"{}\" to {}", text, chatId);
+        } catch (TelegramApiException e) {
+            log.error("Failed to send message \"{}\" to {} due to error: {}", text, chatId, e.getMessage());
         }
     }
 

@@ -42,8 +42,12 @@ public class CgvService {
 
     @PostConstruct
     private void init() throws IOException {
+        telegram.sendMessageToBot(checkStatus());
+    }
+
+    public String checkStatus() throws IOException {
         cache1p1Tickets = Collections.synchronizedList(get1p1Tickets());
-        telegram.sendMessageToBot("CGV\n모든 1+1관람권: %s", cache1p1Tickets.size());
+        return String.format("CGV\n모든 1+1관람권: %s", cache1p1Tickets.size());
     }
 
     public void aJob() throws IOException {
