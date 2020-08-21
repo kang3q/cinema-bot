@@ -53,7 +53,7 @@ public class CgvService {
 
         if (isChangedTicket) {
             CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
-            String buyLink = cgv + newTicket.getLink().substring(1);
+            String buyLink = newTicket.getLink();
             String period = getPeriod(buyLink);
             MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink, true, Utils.generateKey());
             telegram.sendMessageToChannel(format);
