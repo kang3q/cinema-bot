@@ -43,18 +43,17 @@ public class LotteCinemaService {
 
     @PostConstruct
     private void init() {
-        telegram.sendMessageToBot(checkStatus());
+        List<ProductItem> onePlusOneTickets = initOnePlusOneTickets();
+        String message = String.format("롯데시네마\n1+1 관람권: %s", onePlusOneTickets.size());
+        telegram.sendMessageToBot(message);
     }
 
-    public String checkStatus() {
+    public List<ProductItem> initOnePlusOneTickets() {
         LotteCinemaResponse data = getCinemaData();
         LCMallMainItems lcMallMainItems = data.getLCMall_Main_Items();
-        int allTicketsCount = allTicketsCount(lcMallMainItems);
         List<ProductItem> onePlusOneTickets = get1p1Tickets(lcMallMainItems);
         cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
-
-        return String.format("롯데시네마\n모든 관람권: %s\n1+1 관람권: %s",
-                allTicketsCount, onePlusOneTickets.size());
+        return onePlusOneTickets;
     }
 
     public void aJob() {

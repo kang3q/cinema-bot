@@ -41,13 +41,16 @@ public class CgvService {
     private List<CgvItem> cache1p1Tickets;
 
     @PostConstruct
-    private void init() throws IOException {
-        telegram.sendMessageToBot(checkStatus());
+    private void init() throws IOException, NullPointerException {
+        List<CgvItem> onePlusOneTickets = initOnePlusOneTickets();
+        String message = String.format("CGV\n모든 1+1관람권: %s", onePlusOneTickets.size());
+        telegram.sendMessageToBot(message);
     }
 
-    public String checkStatus() throws IOException {
-        cache1p1Tickets = Collections.synchronizedList(get1p1Tickets());
-        return String.format("CGV\n모든 1+1관람권: %s", cache1p1Tickets.size());
+    public List<CgvItem> initOnePlusOneTickets() throws IOException {
+        List<CgvItem> onePlusOneTickets = get1p1Tickets();
+        cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
+        return onePlusOneTickets;
     }
 
     public void aJob() throws IOException {

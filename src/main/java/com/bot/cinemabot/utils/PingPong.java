@@ -1,5 +1,8 @@
 package com.bot.cinemabot.utils;
 
+import com.bot.cinemabot.model.cgv.CgvItem;
+import com.bot.cinemabot.model.lotte.ProductItem;
+import com.bot.cinemabot.model.megabox.MegaboxTicket;
 import com.bot.cinemabot.service.CgvService;
 import com.bot.cinemabot.service.LotteCinemaService;
 import com.bot.cinemabot.service.MegaboxService;
@@ -7,17 +10,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-import com.bot.cinemabot.model.socket.Greeting;
-
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * Created by 1004w455 on 2018. 4. 16..
@@ -63,9 +65,31 @@ public class PingPong extends TelegramLongPollingBot {
             response.setChatId(chatId);
             String text = message.getText();
 
-            if ("영화".equals(text)) {
+            if ("/".equals(text)) {
                 try {
-                    response.setText(String.format("%s\n\n%s\n\n%s", cgvService.checkStatus(), lotteCinemaService.checkStatus(), megaboxService.checkStatus()));
+                    String cgv = cgvService.initOnePlusOneTickets()
+                            .stream()
+                            .map(CgvItem::getDescription)
+                            .collect(Collectors.joining("\n"));
+                    String lotte = lotteCinemaService.initOnePlusOneTickets()
+                            .stream()
+                            .map(ProductItem::getDisplayItemName)
+                            .collect(Collectors.joining("\n"));
+                    String megabox = megaboxService.initOnePlusOneTickets()
+                            .stream()
+                            .map(MegaboxTicket::getName)
+                            .collect(Collectors.joining("\n"));
+                    String str = "";
+                    if (!StringUtils.isEmpty(cgv)) {
+                        str += String.format("CGV\n%s", cgv);
+                    }
+                    if (!StringUtils.isEmpty(lotte)) {
+                        str += String.format("\n\nLOTTE\n%s", lotte);
+                    }
+                    if (!StringUtils.isEmpty(megabox)) {
+                        str += String.format("\n\nMEGABOX\n%s", megabox);
+                    }
+                    response.setText(str);
                 } catch (IOException e) {
                     response.setText(e.getMessage());
                 }

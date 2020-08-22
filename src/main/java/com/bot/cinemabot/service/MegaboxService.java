@@ -42,15 +42,16 @@ public class MegaboxService {
 
 	@PostConstruct
 	private void init() {
-		telegram.sendMessageToBot(checkStatus());
+		List<MegaboxTicket> onePlusOneTickets = initOnePlusOneTickets();
+		String message = String.format("메가박스\n1+1 관람권: %s", onePlusOneTickets.size());
+		telegram.sendMessageToBot(message);
 	}
 
-	public String checkStatus() {
+	public List<MegaboxTicket> initOnePlusOneTickets() {
 		List<MegaboxTicket> allTickets = getMegaboxTickets();
 		List<MegaboxTicket> onePlusOneTickets = filtered1p1Tickets(allTickets);
 		cache1p1Tickets = Collections.synchronizedList(onePlusOneTickets);
-		return String.format("메가박스\n모든 관람권: %s\n1+1 관람권: %s",
-				allTickets.size(), onePlusOneTickets.size());
+		return onePlusOneTickets;
 	}
 
 	public void aJob() throws IOException {
