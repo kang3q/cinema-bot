@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
@@ -67,23 +66,28 @@ public class PingPong extends TelegramLongPollingBot {
             Long chatId = message.getChatId();
             response.setChatId(chatId);
             String text = message.getText();
-
+            String msg = null;
             if ("/".equals(text)) {
                 try {
                     String cgv = getCgvMovieTitles();
                     String lotte = getLotteMovieTitles();
                     String megabox = getMegaboxMovieTitles();
-                    String str = Stream.of(cgv, lotte, megabox)
+                    msg = Stream.of(cgv, lotte, megabox)
                             .filter(Objects::nonNull)
                             .collect(Collectors.joining("\n\n"));
-                    response.setText(str);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     response.setText(e.getMessage());
+                    executeSend(response, chatId, text);
+                    return;
                 }
-            } else {
-                response.setText(text);
+            } else if ("/핑".equals(text)) {
+                msg = "퐁";
             }
-            executeSend(response, chatId, text);
+
+            if (Objects.nonNull(msg)) {
+                response.setText(msg);
+                executeSend(response, chatId, text);
+            }
         }
     }
 
