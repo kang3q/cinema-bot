@@ -19,7 +19,10 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by 1004w455 on 2018. 4. 16..
@@ -67,28 +70,12 @@ public class PingPong extends TelegramLongPollingBot {
 
             if ("/".equals(text)) {
                 try {
-                    String cgv = cgvService.initOnePlusOneTickets()
-                            .stream()
-                            .map(CgvItem::getDescription)
-                            .collect(Collectors.joining("\n"));
-                    String lotte = lotteCinemaService.initOnePlusOneTickets()
-                            .stream()
-                            .map(ProductItem::getDisplayItemName)
-                            .collect(Collectors.joining("\n"));
-                    String megabox = megaboxService.initOnePlusOneTickets()
-                            .stream()
-                            .map(MegaboxTicket::getName)
-                            .collect(Collectors.joining("\n"));
-                    String str = "";
-                    if (!StringUtils.isEmpty(cgv)) {
-                        str += String.format("CGV\n%s", cgv);
-                    }
-                    if (!StringUtils.isEmpty(lotte)) {
-                        str += String.format("\n\nLOTTE\n%s", lotte);
-                    }
-                    if (!StringUtils.isEmpty(megabox)) {
-                        str += String.format("\n\nMEGABOX\n%s", megabox);
-                    }
+                    String cgv = getCgvMovieTitles();
+                    String lotte = getLotteMovieTitles();
+                    String megabox = getMegaboxMovieTitles();
+                    String str = Stream.of(cgv, lotte, megabox)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.joining("\n\n"));
                     response.setText(str);
                 } catch (IOException e) {
                     response.setText(e.getMessage());
@@ -98,6 +85,33 @@ public class PingPong extends TelegramLongPollingBot {
             }
             executeSend(response, chatId, text);
         }
+    }
+
+    private String getMegaboxMovieTitles() {
+        List<MegaboxTicket> tickets = megaboxService.initOnePlusOneTickets();
+        if (tickets.isEmpty()) return null;
+        return "메가박스\n" + tickets
+                .stream()
+                .map(MegaboxTicket::getName)
+                .collect(Collectors.joining("\n"));
+    }
+
+    private String getLotteMovieTitles() {
+        List<ProductItem> tickets = lotteCinemaService.initOnePlusOneTickets();
+        if (tickets.isEmpty()) return null;
+        return "롯데시네마\n" + tickets
+                .stream()
+                .map(ProductItem::getDisplayItemName)
+                .collect(Collectors.joining("\n"));
+    }
+
+    private String getCgvMovieTitles() throws IOException {
+        List<CgvItem> tickets = cgvService.initOnePlusOneTickets();
+        if (tickets.isEmpty()) return null;
+        return "CGV\n" + tickets
+                .stream()
+                .map(CgvItem::getDescription)
+                .collect(Collectors.joining("\n"));
     }
 
     private void executeSend(SendMessage response, Long chatId, String text) {
