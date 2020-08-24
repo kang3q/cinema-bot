@@ -67,7 +67,7 @@ public class PingPong extends TelegramLongPollingBot {
             response.setChatId(chatId);
             String text = message.getText();
             String msg = null;
-            if ("/".equals(text)) {
+            if ("/list".equals(text)) {
                 try {
                     String cgv = getCgvMovieTitles();
                     String lotte = getLotteMovieTitles();
@@ -80,8 +80,8 @@ public class PingPong extends TelegramLongPollingBot {
                     executeSend(response, chatId, text);
                     return;
                 }
-            } else if ("/핑".equals(text)) {
-                msg = "퐁";
+            } else if ("/ping".equals(text)) {
+                msg = "pong";
             }
 
             if (Objects.nonNull(msg)) {
