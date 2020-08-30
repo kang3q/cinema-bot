@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
@@ -75,6 +76,9 @@ public class PingPong extends TelegramLongPollingBot {
                     msg = Stream.of(cgv, lotte, megabox)
                             .filter(Objects::nonNull)
                             .collect(Collectors.joining("\n\n"));
+                    if (StringUtils.isEmpty(msg)) {
+                        msg = "1+1 영화가 없습니다.";
+                    }
                 } catch (Exception e) {
                     response.setText(e.getMessage());
                     executeSend(response, chatId, text);
