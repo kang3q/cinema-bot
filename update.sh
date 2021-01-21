@@ -1,7 +1,7 @@
 sh stop.sh
 
-git config user.email "1004w455@naver.com"
-git config user.name "1004w455"
+git config user.email "kang3q@gmail.com"
+git config user.name "kang3q"
 
 echo 'git pull'
 git fetch --all
