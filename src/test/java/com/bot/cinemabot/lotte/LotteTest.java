@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 public class LotteTest {
 
 	@Test
-	public void test1 () {
+	public void test1_리스트조회 () {
+		System.out.println("test1_리스트조회");
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -27,11 +28,11 @@ public class LotteTest {
 		String jsonResponse = Utils.restTemplate.postForObject("http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx?nocashe=0.2966092977934629", request, String.class);
 
 		// 1차 데이터
-		System.out.println(jsonResponse);
+		System.out.println("-> jsonResponse: " + jsonResponse);
 
 		LotteCinemaResponse lotteCinemaResponse = Utils.gson.fromJson(jsonResponse, LotteCinemaResponse.class);
 
-		System.out.println(Utils.gson.toJson(lotteCinemaResponse));
+		System.out.println("-> Response: " + Utils.gson.toJson(lotteCinemaResponse));
 
 		List<ProductItem> onePlusOneTickets = lotteCinemaResponse.getLCMall_Main_Items().getProduct_Items().getItems()
 				.stream()
@@ -40,11 +41,12 @@ public class LotteTest {
 				.filter(item -> item.getDisplayItemName().contains("1+1") || item.getDisplayItemName().contains("얼리버드"))
 				.collect(Collectors.toList());
 
-		System.out.println(Utils.gson.toJson(onePlusOneTickets));
+		System.out.println("-> 1+1 티켓: " + Utils.gson.toJson(onePlusOneTickets));
 	}
 
 	@Test
 	public void test2_상세정보조회 () {
+		System.out.println("\ntest2_상세정보조회");
 //		{
 //			'MethodName': 'GetLCMallDetail',
 //			'channelType': 'MW',
@@ -58,7 +60,8 @@ public class LotteTest {
 //		String paramListFormat = "{\"MethodName\":\"GetLCMallDetail\",\"channelType\":\"MW\",\"osType\":\"Chrome\",\"osVersion\":\"Mozilla/5.0 (Linux; Android 7.0; SM-G935K Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/61.0.3163.98 Mobile Safari/537.36 wshop/1.0\",\"multiLanguageID\":\"KR\",\"menuID\":\"%s\",\"itemID\":\"%s\",\"classificationCode\":\"%s\"}";
 //		String paramListStr = String.format(paramListFormat, onePlusOneTickets.get(0).getMenuId(), onePlusOneTickets.get(0).getDisplayItemID(), onePlusOneTickets.get(0).getDisplayLargeClassificationCode());
 
-		String itemID = "1904300001";
+//		String itemID = "1904300001"; // 예전 1+1 티켓 -> 기간이 지나서 조회가 안되네, 아래 일반 관람권으로 대체
+		String itemID = "2102260001"; // 일반 관람권
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -69,16 +72,16 @@ public class LotteTest {
 		String jsonResponse = Utils.restTemplate.postForObject("http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx?nocashe=0.2966092977934629", request, String.class);
 
 		// 1차 데이터
-		System.out.println(jsonResponse);
+		System.out.println("-> jsonResponse: " + jsonResponse);
 
 		LotteCinemaResponse lotteCinemaResponse = Utils.gson.fromJson(jsonResponse, LotteCinemaResponse.class);
 
-		System.out.println(Utils.gson.toJson(lotteCinemaResponse));
+		System.out.println("-> response: " + Utils.gson.toJson(lotteCinemaResponse));
 
 		ProductItem item =lotteCinemaResponse.getLCMall_Detail_Items().getProduct_Items().getItems().get(0);
 
-		System.out.println(Utils.gson.toJson(item));
-		System.out.println(item.getUseRestrictionsDayName()); // 사용기간
+		System.out.println("-> item: " + Utils.gson.toJson(item));
+		System.out.println("-> 사용기간: " + item.getUseRestrictionsDayName()); // 사용기간
 
 
 	}
