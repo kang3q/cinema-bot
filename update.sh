@@ -1,16 +1,16 @@
-sh stop.sh
+sh ~/cinema-bot/stop.sh
 
-git config user.email "kang3q@gmail.com"
-git config user.name "kang3q"
+git -C ~/cinema-bot config user.email "kang3q@gmail.com"
+git -C ~/cinema-bot config user.name "kang3q"
 
 echo 'git pull'
-git fetch --all
-git reset --hard origin/master
-git pull origin master
+git -C ~/cinema-bot fetch --all
+git -C ~/cinema-bot reset --hard origin/master
+git -C ~/cinema-bot pull origin master
 
 echo 'mvn clean package'
-mvn -Dmaven.test.skip=true clean package
+mvn clean package -Dmaven.test.skip=true -pl ~/cinema-bot -am
 
-sh run.sh
+sh ~/cinema-bot/run.sh
 
 echo 'END update.sh'
