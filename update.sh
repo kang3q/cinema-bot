@@ -9,7 +9,8 @@ git -C ~/cinema-bot reset --hard origin/master
 git -C ~/cinema-bot pull origin master
 
 echo 'mvn clean package'
-mvn clean package -Dmaven.test.skip=true -pl ~/cinema-bot -am
+#mvn clean package -Dmaven.test.skip=true -pl ~/cinema-bot -am
+mvn clean package -Dmaven.test.skip=true
 
 sh ~/cinema-bot/run.sh
 
