@@ -30,5 +30,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: sh ~/cinema-bot/run.sh
+        script:
+          ch ~/cinema-bot
+          sh ~/cinema-bot/run.sh
         
