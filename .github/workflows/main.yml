@@ -32,5 +32,5 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           ch ~/cinema-bot
-          sh run.sh
+          sh ~/cinema-bot/run.sh
         
