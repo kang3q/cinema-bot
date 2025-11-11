@@ -6,6 +6,7 @@ import com.bot.cinemabot.model.megabox.MegaboxTicket;
 import com.bot.cinemabot.service.CgvService;
 import com.bot.cinemabot.service.LotteCinemaService;
 import com.bot.cinemabot.service.MegaboxService;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.util.StringUtils;
@@ -22,40 +23,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by 1004w455 on 2018. 4. 16..
+ * Telegram Bot - PingPong
+ *
+ * 텔레그램 명령어를 처리하는 봇입니다.
+ * - /ping: "pong" 응답
+ * - /list: 현재 1+1 영화 티켓 목록 조회
  */
 @Slf4j
+@Setter  // Lombok으로 모든 setter 메서드 자동 생성
 public class PingPong extends TelegramLongPollingBot {
-
-//    @Autowired
-//    private SimpMessagingTemplate template;
 
     private CgvService cgvService;
     private LotteCinemaService lotteCinemaService;
     private MegaboxService megaboxService;
     private String token;
     private String username;
-
-    // Setter methods for dependency injection
-    public void setCgvService(CgvService cgvService) {
-        this.cgvService = cgvService;
-    }
-
-    public void setLotteCinemaService(LotteCinemaService lotteCinemaService) {
-        this.lotteCinemaService = lotteCinemaService;
-    }
-
-    public void setMegaboxService(MegaboxService megaboxService) {
-        this.megaboxService = megaboxService;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     @Override
     public String getBotToken() {
