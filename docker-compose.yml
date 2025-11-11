@@ -1,0 +1,23 @@
+# 시놀로지 나스의 컨테이너 매니저에서 사용할 도커 컴포즈 파일.(단순 버전 관리용)
+
+version: '3.8'
+
+services:
+  cinema-bot:
+    image: maven:3.9.5-eclipse-temurin-17
+    container_name: cinema-bot_prod
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SPRING_BOT_TELEGRAM_TOKEN=----
+      - SPRING_BOT_SHEETS_GOOGLE_URL=----
+    command: >
+      sh -c "apt-get update && apt-get install -y git &&
+      if [ ! -d /tmp/cinema-bot ]; then git clone https://github.com/kang3q/cinema-bot.git /tmp/cinema-bot; fi &&
+      cp -r /tmp/cinema-bot/* /app/ &&
+      mvn clean package -Dmaven.test.skip=true &&
+      java -jar target/*.jar"
+    ports:
+      - "8081:8081"
