@@ -62,6 +62,11 @@ public class CgvService {
     public void aJob() {
         try {
             List<CgvItem> onePlusOneTickets = get1p1Tickets();
+
+            if (onePlusOneTickets.isEmpty()) {
+                return;
+            }
+
             boolean isChangedTicket = isChangedTickets(onePlusOneTickets);
             int c = 0;
 
@@ -111,19 +116,19 @@ public class CgvService {
         if (json == null) {
             log.error("CGV HTML에서 jsonData를 찾을 수 없습니다.");
             log.debug("CGV HTML: {}", html);
-            throw new IllegalArgumentException("CGV HTML에서 jsonData를 찾을 수 없습니다.");
+            return Collections.emptyList();
         }
 
         try {
             List<CgvItem> result = new Gson().fromJson(json, new TypeToken<List<CgvItem>>() {}.getType());
             if (result == null) {
                 log.error("CGV json 파싱 결과가 null입니다. json: {}", json);
-                throw new IllegalArgumentException("CGV json 파싱 결과가 null입니다.");
+                return Collections.emptyList();
             }
             return result;
         } catch (JsonSyntaxException e) {
             log.error("CGV json 파싱 실패! json: {}", json, e);
-            throw new IllegalArgumentException("CGV json 파싱 실패: " + e.getMessage(), e);
+            return Collections.emptyList();
         }
     }
 
