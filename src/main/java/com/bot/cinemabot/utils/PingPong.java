@@ -8,9 +8,6 @@ import com.bot.cinemabot.service.LotteCinemaService;
 import com.bot.cinemabot.service.MegaboxService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -28,26 +25,37 @@ import java.util.stream.Stream;
  * Created by 1004w455 on 2018. 4. 16..
  */
 @Slf4j
-@Component
 public class PingPong extends TelegramLongPollingBot {
 
 //    @Autowired
 //    private SimpMessagingTemplate template;
 
-    @Autowired
     private CgvService cgvService;
-
-    @Autowired
     private LotteCinemaService lotteCinemaService;
-
-    @Autowired
     private MegaboxService megaboxService;
-
-    @Value("${spring.bot.telegram.token}")
     private String token;
-
-    @Value("${spring.bot.telegram.username}")
     private String username;
+
+    // Setter methods for dependency injection
+    public void setCgvService(CgvService cgvService) {
+        this.cgvService = cgvService;
+    }
+
+    public void setLotteCinemaService(LotteCinemaService lotteCinemaService) {
+        this.lotteCinemaService = lotteCinemaService;
+    }
+
+    public void setMegaboxService(MegaboxService megaboxService) {
+        this.megaboxService = megaboxService;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     @Override
     public String getBotToken() {
