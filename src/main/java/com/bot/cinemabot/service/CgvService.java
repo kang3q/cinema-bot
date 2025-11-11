@@ -41,10 +41,16 @@ public class CgvService {
     private List<CgvItem> cache1p1Tickets;
 
     @PostConstruct
-    private void init() throws IOException, NullPointerException {
-        List<CgvItem> onePlusOneTickets = initOnePlusOneTickets();
-        String message = String.format("CGV\n모든 1+1관람권: %s", onePlusOneTickets.size());
-        telegram.sendMessageToBot(message);
+    private void init() {
+        try {
+            List<CgvItem> onePlusOneTickets = initOnePlusOneTickets();
+            String message = String.format("CGV\n모든 1+1관람권: %s", onePlusOneTickets.size());
+            telegram.sendMessageToBot(message);
+        } catch (Exception e) {
+            log.error("CGV 초기화 실패: {}", e.getMessage(), e);
+            cache1p1Tickets = Collections.synchronizedList(Collections.emptyList());
+            telegram.sendMessageToBot("CGV 초기화 실패 (스케줄러에서 재시도됩니다): " + e.getMessage());
+        }
     }
 
     public List<CgvItem> initOnePlusOneTickets() throws IOException {
@@ -53,24 +59,28 @@ public class CgvService {
         return onePlusOneTickets;
     }
 
-    public void aJob() throws IOException {
-        List<CgvItem> onePlusOneTickets = get1p1Tickets();
-        boolean isChangedTicket = isChangedTickets(onePlusOneTickets);
-        int c = 0;
+    public void aJob() {
+        try {
+            List<CgvItem> onePlusOneTickets = get1p1Tickets();
+            boolean isChangedTicket = isChangedTickets(onePlusOneTickets);
+            int c = 0;
 
-        if (isChangedTicket) {
-            CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
-            String buyLink = newTicket.getLink();
-            String period = getPeriod(buyLink);
-            MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink, true, Utils.generateKey());
-            telegram.sendMessageToChannel(format);
-            c = 1;
-            cache1p1Tickets.clear();
-            cache1p1Tickets.addAll(onePlusOneTickets);
+            if (isChangedTicket) {
+                CgvItem newTicket = getNew1p1Ticket(onePlusOneTickets);
+                String buyLink = newTicket.getLink();
+                String period = getPeriod(buyLink);
+                MessageFormat format = new MessageFormat("CGV", newTicket.getDescription(), period, "", String.valueOf(onePlusOneTickets.size()), "", buyLink, true, Utils.generateKey());
+                telegram.sendMessageToChannel(format);
+                c = 1;
+                cache1p1Tickets.clear();
+                cache1p1Tickets.addAll(onePlusOneTickets);
+            }
+
+            // log.info("CGV   \t- 호출횟수:{}, 지난관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
+            //         callCount.incrementAndGet(), cache1p1Tickets.size(), c, isChangedTicket);
+        } catch (Exception e) {
+            log.error("CGV 스케줄 작업 실패: {}", e.getMessage(), e);
         }
-
-        // log.info("CGV   \t- 호출횟수:{}, 지난관람권:{}, 1+1관람권:{}, isChangedTicket:{}",
-        //         callCount.incrementAndGet(), cache1p1Tickets.size(), c, isChangedTicket);
     }
 
     private CgvItem getNew1p1Ticket(List<CgvItem> onePlusOneTickets) {
@@ -81,6 +91,9 @@ public class CgvService {
     }
 
     private boolean isChangedTickets(List<CgvItem> next1p1Tickets) {
+        if (cache1p1Tickets == null || cache1p1Tickets.isEmpty()) {
+            return true;
+        }
         return !next1p1Tickets.stream()
                 .allMatch(nextTicket -> cache1p1Tickets.stream().anyMatch(prevTicket -> prevTicket.getIdx() == nextTicket.getIdx()));
     }
@@ -94,13 +107,24 @@ public class CgvService {
         if (matcher.find()) {
             json = matcher.group(4);
         }
-        try {
-            return new Gson().fromJson(json, new TypeToken<List<CgvItem>>() {}.getType());
-        } catch (JsonSyntaxException e) {
-            log.debug("CGV json 파싱 실패! {}", json);
+
+        if (json == null) {
+            log.error("CGV HTML에서 jsonData를 찾을 수 없습니다.");
+            log.debug("CGV HTML: {}", html);
+            throw new IllegalArgumentException("CGV HTML에서 jsonData를 찾을 수 없습니다.");
         }
-        log.debug(html);
-        throw new IllegalArgumentException("cgv 데이터 조회 실패!");
+
+        try {
+            List<CgvItem> result = new Gson().fromJson(json, new TypeToken<List<CgvItem>>() {}.getType());
+            if (result == null) {
+                log.error("CGV json 파싱 결과가 null입니다. json: {}", json);
+                throw new IllegalArgumentException("CGV json 파싱 결과가 null입니다.");
+            }
+            return result;
+        } catch (JsonSyntaxException e) {
+            log.error("CGV json 파싱 실패! json: {}", json, e);
+            throw new IllegalArgumentException("CGV json 파싱 실패: " + e.getMessage(), e);
+        }
     }
 
     private List<CgvItem> get1p1Tickets() throws IOException {
