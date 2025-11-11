@@ -20,5 +20,5 @@ COPY --from=builder /app/target/*.jar app.jar
 # 환경변수 설정 (필요시 docker run 시 오버라이드)
 ENV SPRING_PROFILES_ACTIVE=production
 
-# 실행 명령
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# 실행 명령 (Java 17 모듈 시스템 호환을 위한 JVM 옵션 포함)
+ENTRYPOINT ["java", "--add-opens", "java.base/java.lang=ALL-UNNAMED", "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED", "-jar", "app.jar"]

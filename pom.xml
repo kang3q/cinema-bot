@@ -101,6 +101,10 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<jvmArguments>
+						--add-opens java.base/java.lang=ALL-UNNAMED
+						--add-opens java.base/java.lang.reflect=ALL-UNNAMED
+					</jvmArguments>
 				</configuration>
 			</plugin>
 		</plugins>
