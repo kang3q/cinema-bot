@@ -21,3 +21,7 @@ services:
       java --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED -jar target/*.jar"
     ports:
       - "8081:8081"
+    restart: unless-stopped # 수동으로 중지하지 않는 한 항상 재시작
+    deploy:
+      restart_policy:
+        max_attempts: 3  # 최대 재시작 시도
