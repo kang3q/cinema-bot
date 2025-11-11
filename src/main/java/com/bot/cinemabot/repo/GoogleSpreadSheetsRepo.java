@@ -3,6 +3,7 @@ package com.bot.cinemabot.repo;
 import com.bot.cinemabot.model.MessageFormat;
 import com.bot.cinemabot.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedMultiValueMap;
@@ -13,7 +14,8 @@ import java.net.URLEncoder;
 @Slf4j
 @Repository
 public class GoogleSpreadSheetsRepo {
-	private String url = "https://script.google.com/macros/s/AKfycbzGf6aN5oRmIahIo_Pnup5Q95fJ4nA0PUvjikEoPjD-tCa9D_g/exec";
+	@Value("${spring.bot.sheets.google.url}")
+	private String url;
 
 	@Async
 	public void save(final MessageFormat mf) {

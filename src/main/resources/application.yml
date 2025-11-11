@@ -8,7 +8,9 @@ spring:
 # local 환경
 ---
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
   devtools:
     livereload:
       enabled: true
@@ -21,6 +23,9 @@ spring:
       channel: "@ktestch"
       api:
         sendMessage: https://api.telegram.org/bot%s/sendMessage
+    sheets:
+      google:
+        url:
     cinema:
       lotte:
         api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
@@ -38,7 +43,9 @@ spring:
 # production 환경
 ---
 spring:
-  profiles: production
+  config:
+    activate:
+      on-profile: production
   bot:
     telegram:
       apiDomain: https://api.telegram.org
@@ -48,6 +55,9 @@ spring:
       channel: "@cinema1p1"
       api:
         sendMessage: https://api.telegram.org/bot%s/sendMessage
+    sheets:
+      google:
+        url:
     cinema:
       lotte:
         api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx

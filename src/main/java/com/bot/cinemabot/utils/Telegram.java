@@ -1,7 +1,7 @@
 package com.bot.cinemabot.utils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 import com.bot.cinemabot.model.MessageFormat;
 import com.bot.cinemabot.repo.GoogleSpreadSheetsRepo;
@@ -33,7 +33,7 @@ public class Telegram {
     private String channel;
     @Value("${spring.bot.telegram.api.sendMessage}")
     private String sendMessageUrl;
-    @Value("${spring.profiles}")
+    @Value("${spring.profiles.active:local}")
     private String profile;
 
     @PostConstruct

@@ -15,7 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;

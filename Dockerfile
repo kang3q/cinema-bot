@@ -1,5 +1,5 @@
-# 1️⃣ Java 8 기반 Maven 이미지로 빌드 단계
-FROM maven:3.8.1-openjdk-8 AS builder
+# 1️⃣ Java 17 기반 Maven 이미지로 빌드 단계
+FROM maven:3.9.5-eclipse-temurin-17 AS builder
 
 WORKDIR /app
 
@@ -10,12 +10,15 @@ COPY . .
 RUN mvn clean package -Dmaven.test.skip=true
 
 # 2️⃣ 경량 런타임 단계 (빌드 산출물만 복사)
-FROM openjdk:8-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
 # 빌드된 jar만 복사
 COPY --from=builder /app/target/*.jar app.jar
+
+# 환경변수 설정 (필요시 docker run 시 오버라이드)
+ENV SPRING_PROFILES_ACTIVE=production
 
 # 실행 명령
 ENTRYPOINT ["java", "-jar", "app.jar"]
