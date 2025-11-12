@@ -203,10 +203,6 @@ public class CgvService {
                     return Collections.emptyList();
                 }
 
-                log.info("CGV API 조회 성공. TotalCount: {}, ListCount: {}",
-                    apiResponse.getData().getTotalCount(),
-                    apiResponse.getData().getList().size());
-
                 return apiResponse.getData().getList();
             } catch (JsonSyntaxException e) {
                 log.error("CGV json 파싱 실패! json: {}", jsonResponse, e);
