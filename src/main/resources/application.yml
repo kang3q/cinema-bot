@@ -30,7 +30,7 @@ spring:
       lotte:
         api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
       cgv:
-        api: http://www.cgv.co.kr/culture-event/event/defaultNew.aspx?mCode=004
+        api: https://event.cgv.co.kr/evt/evt/evt/searchEvtListForPage?coCd=A420&evntCtgryLclsCd=03&sscnsChoiYn=N&expnYn=N&expoChnlCd=01&startRow=0&listCount=10
       megabox:
         api: https://m.megabox.co.kr/on/oh/ohd/StoreMain/selectStoreMainList.do
         detailUrl: https://m.megabox.co.kr/store/detail?cmbndKindNo=
@@ -62,7 +62,7 @@ spring:
       lotte:
         api: http://www.lottecinema.co.kr/LCWS/CinemaMall/CinemaMallData.aspx
       cgv:
-        api: http://www.cgv.co.kr/culture-event/event/defaultNew.aspx?mCode=004
+        api: https://event.cgv.co.kr/evt/evt/evt/searchEvtListForPage?coCd=A420&evntCtgryLclsCd=03&sscnsChoiYn=N&expnYn=N&expoChnlCd=01&startRow=0&listCount=10
       megabox:
         api: https://m.megabox.co.kr/on/oh/ohd/StoreMain/selectStoreMainList.do
         detailUrl: https://m.megabox.co.kr/store/detail?cmbndKindNo=

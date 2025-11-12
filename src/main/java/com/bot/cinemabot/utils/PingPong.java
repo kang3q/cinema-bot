@@ -108,7 +108,7 @@ public class PingPong extends TelegramLongPollingBot {
         if (tickets.isEmpty()) return null;
         return "CGV\n" + tickets
                 .stream()
-                .map(CgvItem::getDescription)
+                .map(CgvItem::getEvntNm)
                 .collect(Collectors.joining("\n"));
     }
 

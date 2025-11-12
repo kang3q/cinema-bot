@@ -1,0 +1,21 @@
+### CGV 이벤트 목록 조회
+GET https://event.cgv.co.kr/evt/evt/evt/searchEvtListForPage?coCd=A420&evntCtgryLclsCd=03&sscnsChoiYn=N&expnYn=N&expoChnlCd=01&startRow=0&listCount=10
+Accept: application/json
+Accept-Language: ko-KR
+Cache-Control: no-cache
+Cookie: _ga=GA1.1.590432132.1740458616; _ga_SSGE1ZCJKG=GS2.3.s1749433257$o2$g0$t1749433257$j60$l0$h0; _ga_559DE9WSKZ=GS2.1.s1749433257$o3$g1$t1749433285$j32$l0$h0; refresh_token=mOlv4z/WKrseco4EVqIvnrfaap9cUIlZRMO/29QTyTqvIWA4dBvo7T4buZTmsHuSdDcB1Tz/CQPKJwAtGePS7GJEHemYmXdS/N9ts27cKD+oogWL/HIkxKXJdIQgRvKjgCcc7292tTM6BVhLPVcMRmcI7bCUDI0ShjbX1K4AyXI=; __cf_bm=go1QkvlNKSZT6kKm20Rrx15d4FGAVWdI072ho11aNjg-1762847446-1.0.1.1-VjjNG0YJpzrAETko3.Tbo9jEhZUVknKmQNJuNHp8_nGfs4vopD5awEe3N_.uV.SCGDx1nks6Q25hEXqV9_JnzQ8A8zNnNrvXEO3tevFgAlE; _cfuvid=7E5fQ5xugvAu3NRGFRkAR0yTo6klJe2Mt6MCrJYmCLU-1762847446023-0.0.1.1-604800000; _ga_HV92ZRC3WF=GS2.1.s1762847470$o2$g1$t1762847496$j34$l0$h0
+Origin: https://cgv.co.kr
+Pragma: no-cache
+Priority: u=1, i
+Referer: https://cgv.co.kr/
+Sec-CH-UA: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+Sec-CH-UA-Mobile: ?0
+Sec-CH-UA-Platform: "macOS"
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-site
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+X-Signature: Le/uyDlw2vpld9oGoHoKI97savxXwZa3ZX10Mr8rwY8=
+X-Timestamp: 1762903497
+
+###
