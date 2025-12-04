@@ -1,6 +1,11 @@
 server:
   port: 8081
 
+logging:
+  level:
+    # Telegram Bot Long Polling 연결 에러 로그 끔 (자동 재연결되므로 불필요)
+    org.telegram.telegrambots.updatesreceivers.DefaultBotSession: OFF
+
 spring:
   profiles:
     active: local
